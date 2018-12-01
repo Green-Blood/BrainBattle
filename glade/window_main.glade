@@ -212,6 +212,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer1_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -221,12 +222,13 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="bt_answer3">
-                    <property name="label" translatable="yes">ans3</property>
+                    <property name="label" translatable="yes">ans33</property>
                     <property name="width_request">262</property>
                     <property name="height_request">78</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer3_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -255,6 +257,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer2_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -270,6 +273,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer4_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
