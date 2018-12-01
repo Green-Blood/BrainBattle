@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface>
+  <requires lib="gtk+" version="3.10"/>
+  <object class="GtkAboutDialog" id="about">
+    <property name="can_focus">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="program_name">BrainBattle</property>
+    <property name="copyright" translatable="yes">Copyright 2018 DaunsTeam</property>
+    <property name="authors">1⃣ Dostonkhon Ozodkhujaev U1610065
+
+2⃣ Iroda Ulmasboeva U1610080
+
+3⃣ Ahror Jabborov U1510303
+
+4⃣ Shakhzodbek Isomiddinov U1610219
+
+5⃣ Mirkamol Khamidov U1610142
+
+6⃣ Jamoliddinkhuja Odilkhujaev U1610092</property>
+    <property name="logo_icon_name">image-missing</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="window_game">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Template Window</property>
+    <property name="default_width">640</property>
+    <property name="default_height">480</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed" id="game">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkBox" id="gamebox">
+            <property name="width_request">644</property>
+            <property name="height_request">476</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkMenuBar" id="menubar">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkMenuItem" id="file">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">_File</property>
+                    <property name="use_underline">True</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkImageMenuItem">
+                            <property name="label">gtk-new</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem">
+                            <property name="label">gtk-open</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem">
+                            <property name="label">gtk-save</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem">
+                            <property name="label">gtk-save-as</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem">
+                            <property name="label">gtk-quit</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">_View</property>
+                    <property name="use_underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem" id="help">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">_Help</property>
+                    <property name="use_underline">True</property>
+                    <signal name="activate" handler="help_about" swapped="no"/>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkImageMenuItem">
+                            <property name="label">gtk-about</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lb_question">
+                <property name="width_request">644</property>
+                <property name="height_request">151</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">55</property>
+                <property name="margin_bottom">71</property>
+                <property name="label" translatable="yes">label
+</property>
+                <property name="justify">center</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans Bold 10"/>
+                  <attribute name="style" value="normal"/>
+                  <attribute name="weight" value="normal"/>
+                  <attribute name="variant" value="normal"/>
+                  <attribute name="stretch" value="normal"/>
+                  <attribute name="foreground" value="#ffffffffffff"/>
+                  <attribute name="background" value="#000000000000"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">15</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkButton" id="bt_answer1">
+                    <property name="label" translatable="yes">ans1</property>
+                    <property name="width_request">275</property>
+                    <property name="height_request">88</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer1_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="bt_answer3">
+                    <property name="label" translatable="yes">ans3</property>
+                    <property name="width_request">262</property>
+                    <property name="height_request">78</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer3_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">15</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkButton" id="bt_answer2">
+                    <property name="label" translatable="yes">ans2</property>
+                    <property name="width_request">273</property>
+                    <property name="height_request">78</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer2_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="bt_answer4">
+                    <property name="label" translatable="yes">ans4</property>
+                    <property name="width_request">261</property>
+                    <property name="height_request">87</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_bt_answer4_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="window_main">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Template Window</property>
+    <property name="default_width">640</property>
+    <property name="default_height">480</property>
+    <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed" id="main">
+        <property name="width_request">100</property>
+        <property name="height_request">80</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel" id="lb_count">
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="y">132</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_exit">
+            <property name="label" translatable="yes">Quit Game</property>
+            <property name="width_request">212</property>
+            <property name="height_request">96</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_exit_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">207</property>
+            <property name="y">346</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_join">
+            <property name="label" translatable="yes">Join Game</property>
+            <property name="width_request">211</property>
+            <property name="height_request">98</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_join_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">207</property>
+            <property name="y">234</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_create">
+            <property name="label" translatable="yes">Create Game</property>
+            <property name="width_request">207</property>
+            <property name="height_request">103</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_create_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">209</property>
+            <property name="y">122</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_hello">
+            <property name="width_request">200</property>
+            <property name="height_request">100</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Brain Battle!</property>
+            <attributes>
+              <attribute name="font-desc" value="URW Palladio L Bold Italic 23"/>
+              <attribute name="style" value="italic"/>
+              <attribute name="weight" value="bold"/>
+              <attribute name="variant" value="normal"/>
+              <attribute name="stretch" value="expanded"/>
+              <attribute name="scale" value="1"/>
+              <attribute name="foreground" value="#2e2e34343636"/>
+              <attribute name="background" value="#ffffffffffff"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">215</property>
+            <property name="y">9</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

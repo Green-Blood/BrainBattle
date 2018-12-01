@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface>
+  <requires lib="gtk+" version="3.10"/>
+  <object class="GtkWindow" id="window_main">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Template Window</property>
+    <property name="default_width">640</property>
+    <property name="default_height">480</property>
+    <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel" id="lb_hello">
+            <property name="width_request">200</property>
+            <property name="height_request">100</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Brain Battle!</property>
+            <attributes>
+              <attribute name="font-desc" value="URW Palladio L Bold Italic 23"/>
+              <attribute name="style" value="italic"/>
+              <attribute name="weight" value="bold"/>
+              <attribute name="variant" value="normal"/>
+              <attribute name="stretch" value="expanded"/>
+              <attribute name="scale" value="1"/>
+              <attribute name="foreground" value="#2e2e34343636"/>
+              <attribute name="background" value="#ffffffffffff"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">215</property>
+            <property name="y">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_count">
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_create">
+            <property name="label" translatable="yes">Create Game</property>
+            <property name="width_request">207</property>
+            <property name="height_request">103</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_create_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">209</property>
+            <property name="y">122</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_join">
+            <property name="label" translatable="yes">Join Game</property>
+            <property name="width_request">211</property>
+            <property name="height_request">98</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_join_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">207</property>
+            <property name="y">234</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_exit">
+            <property name="label" translatable="yes">Quit Game</property>
+            <property name="width_request">212</property>
+            <property name="height_request">96</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_exit_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">207</property>
+            <property name="y">346</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
