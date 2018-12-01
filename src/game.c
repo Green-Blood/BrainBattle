@@ -7,9 +7,6 @@
 
 void on_btn_join_clicked()
 {
-    
-  
-
     GtkBuilder      *builder; 
     GtkWidget       *game;
     builder = gtk_builder_new();

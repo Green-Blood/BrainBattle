@@ -5,7 +5,7 @@
   <object class="GtkAboutDialog" id="about">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
-    <property name="program_name">BrainBattle</property>
+    <property name="program_name">Clash Of Minds</property>
     <property name="copyright" translatable="yes">Copyright 2018 DaunsTeam</property>
     <property name="authors">1⃣ Dostonkhon Ozodkhujaev U1610065
 
@@ -371,7 +371,7 @@
             <property name="height_request">100</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Brain Battle!</property>
+            <property name="label" translatable="yes">Clash Of Minds!</property>
             <attributes>
               <attribute name="font-desc" value="URW Palladio L Bold Italic 23"/>
               <attribute name="style" value="italic"/>

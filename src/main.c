@@ -4,6 +4,7 @@
 
     GtkWidget *g_lb_hello;
     GtkWidget *g_lb_count;
+    GtkWidget *g_lb_question;
     
 int main(int argc, char *argv[])
 {
@@ -54,17 +55,23 @@ void on_btn_exit_clicked()
 }
 
 void on_btn_join_clicked()
-{
-    
+{    
     GtkBuilder      *builder; 
     GtkWidget       *game;
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
     
-    game = GTK_WIDGET(gtk_builder_get_object(builder, "window_game"));
+    game = GTK_WIDGET(gtk_builder_get_object(builder, "window_game"));        
     gtk_builder_connect_signals(builder, NULL);
+ 
+    g_lb_question = GTK_WIDGET(gtk_builder_get_object(builder, "lb_question"));
+    g_object_unref(builder);
     gtk_widget_show(game);
     gtk_main();
+}
+void on_bt_answer1_clicked()
+{
+    gtk_label_set_text(GTK_LABEL(g_lb_question), "Q1");
 }
 
 // called when window is closed

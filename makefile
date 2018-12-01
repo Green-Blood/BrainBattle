@@ -1,5 +1,5 @@
 # change application name here (executable output name)
-TARGET=СlashOfMinds
+TARGET=ClashOfMinds
  
 # compiler
 CC=gcc
@@ -27,8 +27,8 @@ all: $(OBJS)
     
 main.o: src/main.c
 	$(CC) -c $(CCFLAGS) src/main.c $(GTKLIB) -o main.o
+
 # game.o: src/game.c
-# 	$(CC) -c $(CCFLAGS) src/game.c $(GTKLIB) -o game.o
-    
+#  	$(CC) -c $(CCFLAGS) src/game.c $(GTKLIB) -o game.o
 clean:
 	rm -f *.o $(TARGET)
