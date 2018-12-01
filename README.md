@@ -1,2 +1,2 @@
-# BrainBattle
-BrainBattle OS
+# BrainBattle/Clash of minds
+OS
