@@ -5,11 +5,6 @@
     GtkWidget *g_lb_hello;
     GtkWidget *g_lb_count;
     
-
-
-
-
-
 int main(int argc, char *argv[])
 {
     GtkBuilder      *builder; 
