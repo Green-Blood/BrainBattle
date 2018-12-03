@@ -1,8 +1,12 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include <gtk/gtk.h>
 #include <stdlib.h>
 
 
- GtkWidget *g_lb_question;
+
+GtkWidget *g_lb_question;
 
 
 void on_btn_join_clicked()
