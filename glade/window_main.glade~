@@ -148,7 +148,7 @@
                     <property name="use_underline">True</property>
                     <signal name="activate" handler="help_about" swapped="no"/>
                     <child type="submenu">
-                      <object class="GtkMenu">
+                      <object class="GtkMenu" id="abou">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -293,6 +293,112 @@
       </object>
     </child>
   </object>
+  <object class="GtkWindow" id="window_log">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Template Window</property>
+    <property name="default_width">640</property>
+    <property name="default_height">480</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed" id="login">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkEntry" id="entry_name">
+            <property name="width_request">190</property>
+            <property name="height_request">32</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="x">400</property>
+            <property name="y">110</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="logo">
+            <property name="width_request">252</property>
+            <property name="height_request">197</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="stock">gtk-missing-image</property>
+          </object>
+          <packing>
+            <property name="x">30</property>
+            <property name="y">47</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_name">
+            <property name="width_request">179</property>
+            <property name="height_request">41</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Enter your name:</property>
+          </object>
+          <packing>
+            <property name="x">402</property>
+            <property name="y">74</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="password">
+            <property name="width_request">190</property>
+            <property name="height_request">32</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="x">400</property>
+            <property name="y">201</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_pass">
+            <property name="width_request">179</property>
+            <property name="height_request">41</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Enter your password:</property>
+          </object>
+          <packing>
+            <property name="x">402</property>
+            <property name="y">151</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_exit1">
+            <property name="label" translatable="yes">Quit Game</property>
+            <property name="width_request">260</property>
+            <property name="height_request">92</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">181</property>
+            <property name="y">365</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="bt_login">
+            <property name="label" translatable="yes">Login</property>
+            <property name="width_request">260</property>
+            <property name="height_request">92</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">181</property>
+            <property name="y">259</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="window_main">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Template Window</property>
@@ -321,32 +427,17 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="btn_exit">
-            <property name="label" translatable="yes">Quit Game</property>
-            <property name="width_request">212</property>
-            <property name="height_request">96</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="on_btn_exit_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">207</property>
-            <property name="y">346</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="btn_join">
             <property name="label" translatable="yes">Join Game</property>
-            <property name="width_request">211</property>
-            <property name="height_request">98</property>
+            <property name="width_request">207</property>
+            <property name="height_request">103</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <signal name="clicked" handler="on_btn_join_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">207</property>
+            <property name="x">216</property>
             <property name="y">234</property>
           </packing>
         </child>
@@ -361,7 +452,7 @@
             <signal name="clicked" handler="on_btn_create_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">209</property>
+            <property name="x">216</property>
             <property name="y">122</property>
           </packing>
         </child>
@@ -386,6 +477,21 @@
           <packing>
             <property name="x">215</property>
             <property name="y">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_exit">
+            <property name="label" translatable="yes">Quit Game</property>
+            <property name="width_request">207</property>
+            <property name="height_request">103</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_exit_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">216</property>
+            <property name="y">348</property>
           </packing>
         </child>
       </object>

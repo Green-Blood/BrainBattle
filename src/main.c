@@ -1,34 +1,60 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <gdk/gdkkeysyms.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <mysql/mysql.h>
 
+
+
+    
+
+    //Take values
     GtkWidget *g_lb_hello;
     GtkWidget *g_lb_count;
     GtkWidget *g_lb_question;
+    GtkBuilder  *builder; 
+    GtkWidget   *window;
+    GtkWidget   *login;
+
+    //Sql setup
+    MYSQL *conn;
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+    
+    //SQL Connect
+    static char *host = "localhost" ;
+    static char *user = "user";
+    static char *pass = "asdfasdf";
+    static char *dbname = "ClashOfMinds";
+
+    unsigned int port = 3306;
+    static char *unix_socket = NULL;
+    unsigned int flag = 0;
+
     
 int main(int argc, char *argv[])
 {
+    conn = mysql_init(NULL);
 
+    if(!(mysql_real_connect(conn,host,user,pass,dbname, port, unix_socket, flag)))
+    {
+        fprintf(stderr, "Error: %s [%d]\n", mysql_error(conn), mysql_errno(conn));
+        exit(1);
+    }
+    //Gtk setup
     
-    GtkBuilder      *builder; 
-    GtkWidget       *window;
- 
+    
  
     gtk_init(&argc, &argv);
- 
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
- 
-    window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
+    login = GTK_WIDGET(gtk_builder_get_object(builder, "window_log"));
     gtk_builder_connect_signals(builder, NULL);
     
- 
-    //get pointers 
-    g_lb_hello = GTK_WIDGET(gtk_builder_get_object(builder, "lb_hello"));
-    g_lb_count = GTK_WIDGET(gtk_builder_get_object(builder, "lb_count"));
     g_object_unref(builder);
- 
-    gtk_widget_show(window);                
+
+    gtk_widget_show(login);                
     gtk_main();
  
     return 0;
@@ -59,7 +85,7 @@ void on_btn_exit_clicked()
 
 void on_btn_join_clicked()
 {    
-    GtkBuilder      *builder; 
+    
     GtkWidget       *game;
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
@@ -70,8 +96,31 @@ void on_btn_join_clicked()
     g_lb_question = GTK_WIDGET(gtk_builder_get_object(builder, "lb_question"));
     g_object_unref(builder);
     gtk_widget_show(game);
+    gtk_widget_hide(window);
     gtk_main();
 }
+
+void on_btn_login_clicked()
+{
+     //Gtk setup   
+ 
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
+ 
+    window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
+    gtk_builder_connect_signals(builder, NULL);    
+ 
+    //get pointers 
+    g_lb_hello = GTK_WIDGET(gtk_builder_get_object(builder, "lb_hello"));
+    g_lb_count = GTK_WIDGET(gtk_builder_get_object(builder, "lb_count"));
+    g_object_unref(builder);
+
+    gtk_widget_show(window);       
+    gtk_widget_hide(login);
+    gtk_main();
+
+}
+
 void on_bt_answer1_clicked()
 {
     gtk_label_set_text(GTK_LABEL(g_lb_question), "Q1");
