@@ -6,9 +6,6 @@
 #include <mysql/mysql.h>
 
 
-
-    
-
     //Take values    
     GtkWidget   *g_lb_question;
     GtkBuilder  *builder; 
@@ -113,7 +110,6 @@ void on_btn_exit_clicked()
 
 void on_btn_join_clicked()
 {    
-    
     GtkWidget       *game;
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
@@ -224,9 +220,9 @@ G_MODULE_EXPORT void on_btn_register_clicked()
     gtk_label_set_text(g_empty_field2, " ");
         
     char *name = gtk_entry_get_text(g_new_name);
-    char *password = gtk_entry_get_text(g_new_password);
-    
+    char *password = gtk_entry_get_text(g_new_password);    
     char statement[1024];
+
     int flag = 0;
     if (!strcmp("", name)){
         gtk_label_set_text(g_empty_field1, "This field can't be empty!");
