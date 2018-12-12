@@ -12,6 +12,11 @@
     GtkWidget   *window;
     GtkWidget   *login;
     
+    //Buttons
+    GtkButton *g_bt_answer3;
+    GtkButton *g_bt_answer1;
+    GtkButton *g_bt_answer2;
+    GtkButton *g_bt_answer4;
 
     //Take Account registration values
     GtkEntry *g_new_name;
@@ -57,10 +62,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error: %s [%d]\n", mysql_error(conn), mysql_errno(conn));
         exit(1);
     }
-    //Gtk setup
-    
-    
- 
+    //Gtk setup 
     gtk_init(&argc, &argv);
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
@@ -110,6 +112,7 @@ void on_btn_exit_clicked()
 
 void on_btn_join_clicked()
 {    
+    //Build the game window
     GtkWidget       *game;
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
@@ -117,12 +120,40 @@ void on_btn_join_clicked()
     game = GTK_WIDGET(gtk_builder_get_object(builder, "window_game"));        
     gtk_builder_connect_signals(builder, NULL);
  
+    //Get the objects for actual game 
     g_lb_question = GTK_WIDGET(gtk_builder_get_object(builder, "lb_question"));
+    g_bt_answer1 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer1"));
+    g_bt_answer2 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer2"));
+    g_bt_answer3 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer3"));
+    g_bt_answer4 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer4"));
+
     g_object_unref(builder);
     gtk_widget_show(game);
     gtk_widget_hide(window);
     gtk_main();
+
+   
+
+    
+    // int num_fields = mysql_num_fields(result)
+    // while(row)
+    // {
+        
+    //     for(int i = 0; i < num_fields; i++)
+    //     {
+            
+    //     }
+        
+    // }
+    
+
+    
+
+
 }
+
+
+
 //Login of player 
 G_MODULE_EXPORT void on_btn_login_clicked()
 {
@@ -143,15 +174,18 @@ G_MODULE_EXPORT void on_btn_login_clicked()
     char mysqlpass[1024];
     int flag = 0;
     
+    //Check if the name field is empty or not
     if (!strcmp("", name)){
         gtk_label_set_text(g_log_name_emptyfield, "This field can't be empty!");
         
         flag = 1;
     }
+    //Check if the password field is empty or not
     if (!strcmp("", password)){
         gtk_label_set_text(g_log_password_emptyfield, "This field can't be empty!");
         flag = 1;
     }
+    //Write sql code into an variable and send the query to find the names
     snprintf(mysqlname, 1024,"SELECT name FROM users WHERE name = '%s'",  name);     
     if (mysql_query(conn, mysqlname))
     {
@@ -159,45 +193,37 @@ G_MODULE_EXPORT void on_btn_login_clicked()
             gtk_label_set_text(g_log_name_emptyfield, "Name is incorrect!");
             flag = 1;            
     }   
-    MYSQL_RES *result = mysql_store_result(conn);
-    if (result == NULL) 
-    {
-            fprintf(stderr, "%s\n", mysql_error(conn));            
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    row = mysql_fetch_row(res);
+    //Check if the result is correct or not
+    if (row == NULL )
+    {                    
             gtk_label_set_text(g_log_name_emptyfield, "Name is incorrect!");
             flag = 1;      
     }
-    int num_fields = mysql_num_fields(result);
-     
+    //free the result
+    mysql_free_result(res);
 
-    // if()
-    // {
-    //     fprintf(stderr, "%s\n", mysql_error(conn));            
-    //         gtk_label_set_text(g_log_name_emptyfield, "Name is incorrect!");
-    //         flag = 1; 
-    // }    
-    // if () 
-    // {
-    //     gtk_label_set_text(g_log_name_emptyfield, "Name is incorrect");        
-    //     flag = 1;
-    // }   
-    
-
-    // res = mysql_use_result(conn);
-    // row = mysql_fetch_row(res);
-    // mysql_free_result(res);
-    
-    // snprintf(mysqlpass, 1024,"SELECT password  FROM users WHERE password = '%s'",  password);  
-      
-    // if (mysql_query(conn, mysqlpass))
-    // {
-    //         fprintf(stderr, "%s\n", mysql_error(conn));            
-    //         gtk_label_set_text(g_log_password_emptyfield, "Password is incorrect!");
-    //         flag = 1;
-    // }
-    // res = mysql_use_result(conn);
-    // row = mysql_fetch_row(res);
-    // mysql_free_result(res);
-
+    //Write sql code into an variable and send the query to find the password
+    snprintf(mysqlpass, 1024,"SELECT password FROM users WHERE password = '%s'",  password);     
+    if (mysql_query(conn, mysqlpass))
+    {
+            fprintf(stderr, "%s\n", mysql_error(conn));            
+            gtk_label_set_text(g_log_password_emptyfield, "Password is incorrect!");
+            flag = 1;            
+    }   
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    row = mysql_fetch_row(res);
+    //Check if the result is correct or not
+    if (row == NULL )
+    {                    
+            gtk_label_set_text(g_log_password_emptyfield, "Password is incorrect!");
+            flag = 1;      
+    }
+    //free the result
+    mysql_free_result(res);
 
     if (flag == 0)
     {    
@@ -206,8 +232,7 @@ G_MODULE_EXPORT void on_btn_login_clicked()
 
         gtk_widget_show(window);       
         gtk_widget_hide(login);
-        gtk_main();
-        mysql_free_result(result);
+        gtk_main();        
         mysql_close(conn);
     }
     
@@ -232,37 +257,22 @@ G_MODULE_EXPORT void on_btn_register_clicked()
     if (!strcmp("", password)){
         gtk_label_set_text(g_empty_field2, "This field can't be empty!");
         flag = 1;
-    }
-   
+    }  
 
     if (flag == 0)
     {
-        //sending query
+        //sending insert query
         snprintf(statement, 1024,"INSERT INTO users (name, password) VALUES('%s','%s')", name, password);
         if (mysql_query(conn, statement))
+        {            
+            gtk_label_set_text(g_new_id, "That name already exists!");
+            flag == 1;            
+        }           
+        else
         {
-            fprintf(stderr, "%s\n", mysql_error(conn));
-            gtk_label_set_text(g_new_id, "Error!");
-            exit(1);
-        }
-       
-
-        /* displaying new users id */
-        if (mysql_query(conn, "SELECT id FROM users ORDER BY id DESC LIMIT 1"))
-        {
-            fprintf(stderr, "%s\n", mysql_error(conn));
-            gtk_label_set_text(g_new_id, "Error!");
-            exit(1);
+            gtk_label_set_text(g_new_id, "Succesfull Registration" );
         }
         res = mysql_use_result(conn);
-        row = mysql_fetch_row(res);
-        char statement2[50];
-        snprintf(statement2, 50, "User's ID: %s", row[0]);
-        gtk_label_set_text(g_new_id, statement2);
-
-        snprintf(statement2, 50, "%s", row[0]);
-     
-
         mysql_free_result(res);
     }
 }
@@ -278,6 +288,46 @@ G_MODULE_EXPORT void on_btn_close_invalid_entry_clicked()
 void on_bt_answer1_clicked()
 {
     gtk_label_set_text(GTK_LABEL(g_lb_question), "Q1");
+}
+void on_bt_answer2_clicked()
+{
+     //Write sql code into an variable and send the query to find the password   
+    if (mysql_query(conn, "SELECT * FROM `questions` LEFT JOIN  `answer` on questions.id = parent_question  " ))
+    {
+            fprintf(stderr, "%s\n", mysql_error(conn));                       
+    }   
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    
+    //Check if the result is correct or not
+    if (res == NULL )
+    {                    
+            gtk_widget_show(invalid_entry);
+                 
+    }
+    //Create Mysql row
+    MYSQL_ROW row;
+    //create random number and counter      
+    int rand_num = rand() % mysql_num_rows(res);
+    int i=0;
+    while(row = mysql_fetch_row(res))
+    {
+        //counter is going up everytime when loop is going, so if random number is equals to counter in will show this question
+        i++;       
+        if(i == rand_num)
+        {
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
+            gtk_button_set_label(g_bt_answer3, row[3]);
+            gtk_button_set_label(g_bt_answer1, row[3]);
+            gtk_button_set_label(g_bt_answer4, row[3]);
+            gtk_button_set_label(g_bt_answer2, row[3]);
+
+
+        }   
+    }
+    //free the result
+    mysql_free_result(res);  
+    
 }
 
 // called when window is closed
