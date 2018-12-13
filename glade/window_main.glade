@@ -44,6 +44,11 @@
       </object>
     </child>
   </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
   <object class="GtkMessageDialog" id="msg_invalidentry">
     <property name="can_focus">False</property>
     <property name="type">popup</property>
@@ -806,7 +811,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="lb_new_id1">
+              <object class="GtkLabel" id="lb_profile_id">
                 <property name="width_request">261</property>
                 <property name="height_request">51</property>
                 <property name="visible">True</property>
@@ -818,7 +823,7 @@
               </object>
               <packing>
                 <property name="x">388</property>
-                <property name="y">510</property>
+                <property name="y">462</property>
               </packing>
             </child>
             <child>
@@ -843,9 +848,10 @@
                 <property name="height_request">64</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="label" translatable="yes">0</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans 12"/>
-                  <attribute name="foreground" value="#cccc00000000"/>
+                  <attribute name="font-desc" value="Sans Bold Italic 12"/>
+                  <attribute name="foreground" value="#2e2e34343636"/>
                 </attributes>
               </object>
               <packing>
@@ -902,6 +908,21 @@
               <packing>
                 <property name="x">402</property>
                 <property name="y">159</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="bt_profile_refresh">
+                <property name="label" translatable="yes">Refresh</property>
+                <property name="width_request">240</property>
+                <property name="height_request">91</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_bt_profile_refresh_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="x">25</property>
+                <property name="y">189</property>
               </packing>
             </child>
           </object>

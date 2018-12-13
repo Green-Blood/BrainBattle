@@ -32,10 +32,16 @@
     GtkLabel *g_log_name_emptyfield;
     GtkLabel *g_log_password_emptyfield;
 
+    //Take Profile values
+    GtkLabel *g_profile_name_emptyfield;
+    GtkLabel *g_profile_score_emptyfield;
+    GtkLabel *g_profile_id;
+
     //Error messages
     GtkMessageDialog *invalid_entry;
    
-    
+    char mysqlname[1024];
+    char mysqlpass[1024];
 
     //Sql setup
     MYSQL *conn;
@@ -81,7 +87,12 @@ int main(int argc, char *argv[])
     g_log_password = GTK_ENTRY(gtk_builder_get_object(builder,"entry_pass"));   
     g_log_name_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_log_emptyfield"));
     g_log_password_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_log_emptyfield1"));
-   
+    
+    //Building Profile entries
+    g_profile_name_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_empty_profile_name"));
+    g_profile_score_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_empty_profile_score"));
+    g_profile_id = GTK_LABEL(gtk_builder_get_object(builder, "lb_profile_id"));
+
     //Building error dialogs
     invalid_entry = GTK_WIDGET(gtk_builder_get_object(builder, "msg_invalidentry"));
     
@@ -94,7 +105,6 @@ int main(int argc, char *argv[])
 }
 
 // called when buttons is clicked
-
 void on_btn_create_clicked()
 {
     
@@ -129,12 +139,84 @@ void on_btn_join_clicked()
 
     g_object_unref(builder);
     gtk_widget_show(game);
+
+    //Inserting game to game table
+     //sending insert query
+        // char statement[1024];
+        // snprintf(statement, 1024,"INSERT INTO games (name) VALUES('%s')", name);
+        // if (mysql_query(conn, statement))
+        // {            
+        //     mysql_errno(conn);
+                     
+        // }           
+        
+        // res = mysql_use_result(conn);
+        // mysql_free_result(res);
+
+
+    //Write sql code into an variable and send the query to find the password   
+    if (mysql_query(conn, "SELECT * FROM `questions` LEFT JOIN  `answer` on questions.id = parent_question  " ))
+    {
+            fprintf(stderr, "%s\n", mysql_error(conn));                       
+    }   
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    
+    //Check if the result is correct or not
+    if (res == NULL )
+    {                    
+            gtk_widget_show(invalid_entry);
+                 
+    }
+    //Create Mysql row
+    MYSQL_ROW row;
+    //create random number and counter      
+    int rand_num = rand() % mysql_num_rows(res);
+    int i=0;
+    while(row = mysql_fetch_row(res))
+    {
+        //counter is going up everytime when loop is going, so if random number is equals to counter in will show this question
+        i++;       
+        if(i == rand_num)
+        {
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
+            
+            int rand_but = rand() % 4;
+            if(rand_but == 1)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but+3]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+4]);
+            }
+            else if(rand_but == 4)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but-2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but-1]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+1]);
+            }
+            else if (rand_but == 3)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but-1]);
+            }
+            else if (rand_but == 2)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1 ]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
+            }
+        }   
+    }
+    //free the result
+    mysql_free_result(res);  
     gtk_widget_hide(window);
     gtk_main();
-
    
-
-    
     // int num_fields = mysql_num_fields(result)
     // while(row)
     // {
@@ -145,10 +227,6 @@ void on_btn_join_clicked()
     //     }
         
     // }
-    
-
-    
-
 
 }
 
@@ -170,8 +248,7 @@ G_MODULE_EXPORT void on_btn_login_clicked()
  
     char *name = gtk_entry_get_text(g_log_name);
     char *password = gtk_entry_get_text(g_log_password);
-    char mysqlname[1024];
-    char mysqlpass[1024];
+    
     int flag = 0;
     
     //Check if the name field is empty or not
@@ -202,6 +279,7 @@ G_MODULE_EXPORT void on_btn_login_clicked()
             gtk_label_set_text(g_log_name_emptyfield, "Name is incorrect!");
             flag = 1;      
     }
+    
     //free the result
     mysql_free_result(res);
 
@@ -222,11 +300,14 @@ G_MODULE_EXPORT void on_btn_login_clicked()
             gtk_label_set_text(g_log_password_emptyfield, "Password is incorrect!");
             flag = 1;      
     }
+
+
     //free the result
     mysql_free_result(res);
 
     if (flag == 0)
     {    
+        
         //load game intro window
         g_object_unref(builder);
 
@@ -234,8 +315,33 @@ G_MODULE_EXPORT void on_btn_login_clicked()
         gtk_widget_hide(login);
         gtk_main();        
         mysql_close(conn);
-    }
-    
+    }   
+}
+G_MODULE_EXPORT void on_bt_profile_refresh_clicked()
+{
+        gtk_label_set_text(GTK_LABEL(g_profile_name_emptyfield), "123");
+        char *name = gtk_entry_get_text(g_log_name);
+        char statement2[1024];
+        snprintf(statement2, 1024,"SELECT name, score, id FROM users WHERE name = '%s'", name);   
+        if(mysql_query(conn,statement2))
+        {
+            fprintf(stderr, "%s\n", mysql_error(conn));
+            
+        }
+
+        MYSQL_ROW row;
+        //Store result and add it to the row   
+        res = mysql_store_result(conn);  
+        
+        while(row = mysql_fetch_row(res))
+        {
+            gtk_label_set_text(GTK_LABEL(g_profile_id), "123");
+            gtk_label_set_text(GTK_LABEL(g_profile_name_emptyfield), row[1]);  
+            gtk_label_set_text(GTK_LABEL(g_profile_score_emptyfield), row[2]);  
+        }
+        //free the result
+        mysql_free_result(res); 
+        gtk_label_set_text(GTK_LABEL(g_profile_id), "123");
 }
 //Registration of new player
 G_MODULE_EXPORT void on_btn_register_clicked()
@@ -284,14 +390,10 @@ G_MODULE_EXPORT void on_btn_close_invalid_entry_clicked()
 }
 
 
-
+//Executes if first button clicked
 void on_bt_answer1_clicked()
 {
-    gtk_label_set_text(GTK_LABEL(g_lb_question), "Q1");
-}
-void on_bt_answer2_clicked()
-{
-     //Write sql code into an variable and send the query to find the password   
+         //Write sql code into an variable and send the query to find the password   
     if (mysql_query(conn, "SELECT * FROM `questions` LEFT JOIN  `answer` on questions.id = parent_question  " ))
     {
             fprintf(stderr, "%s\n", mysql_error(conn));                       
@@ -317,17 +419,245 @@ void on_bt_answer2_clicked()
         if(i == rand_num)
         {
             gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
-            gtk_button_set_label(g_bt_answer3, row[3]);
-            gtk_button_set_label(g_bt_answer1, row[3]);
-            gtk_button_set_label(g_bt_answer4, row[3]);
-            gtk_button_set_label(g_bt_answer2, row[3]);
-
-
+            
+            int rand_but = rand() % 4;
+            if(rand_but == 1)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but+3]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+4]);
+            }
+            else if(rand_but == 4)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but-2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but-1]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+1]);
+            }
+            else if (rand_but == 3)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but-1]);
+            }
+            else if (rand_but == 2)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1 ]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
+            }
         }   
     }
     //free the result
     mysql_free_result(res);  
+    gtk_widget_hide(window);
+    gtk_main();
+}
+//Executes if second button clicked
+void on_bt_answer2_clicked()
+{
     
+    //Write sql code into an variable and send the query to find the password   
+    if (mysql_query(conn, "SELECT * FROM `questions` LEFT JOIN  `answer` on questions.id = parent_question  " ))
+    {
+            fprintf(stderr, "%s\n", mysql_error(conn));                       
+    }   
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    
+    //Check if the result is correct or not
+    if (res == NULL )
+    {                    
+            gtk_widget_show(invalid_entry);
+                 
+    }
+    //Create Mysql row
+    MYSQL_ROW row;
+    //create random number and counter      
+    int rand_num = rand() % mysql_num_rows(res);
+    int i=0;
+    while(row = mysql_fetch_row(res))
+    {
+        //counter is going up everytime when loop is going, so if random number is equals to counter in will show this question
+        i++;       
+        if(i == rand_num)
+        {
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
+            
+            int rand_but = rand() % 4;
+            if(rand_but == 1)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but+3]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+4]);
+            }
+            else if(rand_but == 4)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but-2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but-1]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+1]);
+            }
+            else if (rand_but == 3)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but-1]);
+            }
+            else if (rand_but == 2)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1 ]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
+            }
+        }   
+    }
+    //free the result
+    mysql_free_result(res);  
+    gtk_widget_hide(window);
+    gtk_main();    
+}
+
+//Executes when button 3 clicked
+void on_bt_answer3_clicked()
+{
+    
+    //Write sql code into an variable and send the query to find the password   
+    if (mysql_query(conn, "SELECT * FROM `questions` LEFT JOIN  `answer` on questions.id = parent_question  " ))
+    {
+            fprintf(stderr, "%s\n", mysql_error(conn));                       
+    }   
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    
+    //Check if the result is correct or not
+    if (res == NULL )
+    {                    
+            gtk_widget_show(invalid_entry);
+                 
+    }
+    //Create Mysql row
+    MYSQL_ROW row;
+    //create random number and counter      
+    int rand_num = rand() % mysql_num_rows(res);
+    int i=0;
+    while(row = mysql_fetch_row(res))
+    {
+        //counter is going up everytime when loop is going, so if random number is equals to counter in will show this question
+        i++;       
+        if(i == rand_num)
+        {
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
+            
+            int rand_but = rand() % 4;
+            if(rand_but == 1)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but+3]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+4]);
+            }
+            else if(rand_but == 4)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but-2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but-1]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+1]);
+            }
+            else if (rand_but == 3)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but-1]);
+            }
+            else if (rand_but == 2)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1 ]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
+            }
+        }   
+    }
+    //free the result
+    mysql_free_result(res);  
+    gtk_widget_hide(window);
+    gtk_main();    
+}
+
+//Executes when button4 clicked
+void on_bt_answer4_clicked()
+{
+    
+    //Write sql code into an variable and send the query to find the password   
+    if (mysql_query(conn, "SELECT * FROM `questions` LEFT JOIN  `answer` on questions.id = parent_question  " ))
+    {
+            fprintf(stderr, "%s\n", mysql_error(conn));                       
+    }   
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    
+    //Check if the result is correct or not
+    if (res == NULL )
+    {                    
+            gtk_widget_show(invalid_entry);
+                 
+    }
+    //Create Mysql row
+    MYSQL_ROW row;
+    //create random number and counter      
+    int rand_num = rand() % mysql_num_rows(res);
+    int i=0;
+    while(row = mysql_fetch_row(res))
+    {
+        //counter is going up everytime when loop is going, so if random number is equals to counter in will show this question
+        i++;       
+        if(i == rand_num)
+        {
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
+            
+            int rand_but = rand() % 4;
+            if(rand_but == 1)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but+3]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+4]);
+            }
+            else if(rand_but == 4)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but-2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but-1]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+1]);
+            }
+            else if (rand_but == 3)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but-1]);
+            }
+            else if (rand_but == 2)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1 ]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
+            }
+        }   
+    }
+    //free the result
+    mysql_free_result(res);  
+    gtk_widget_hide(window);
+    gtk_main();    
 }
 
 // called when window is closed
