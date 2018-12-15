@@ -45,16 +45,21 @@
     //Error messages
     GtkMessageDialog *invalid_entry;
    
-    char mysqlname[1024];
-    char mysqlpass[1024];
+    //Static values
+    //User values
+    char static globalname[1024];
+
+    char  mysqlname[1024];
+    char  mysqlpass[1024];
+    int static rounds = 0;
+    int static score = 0;
 
     //Sql setup
     MYSQL *conn;
     MYSQL_RES *res;
     MYSQL_ROW row;
     
-    int static rounds = 0;
-    int static score = 0;
+    
 
     //SQL Connect
     static char *host = "localhost" ;
@@ -119,7 +124,7 @@ G_MODULE_EXPORT void on_btn_login_clicked()
     //Set empty field to empty (Maybe illogical, but actually it has logic)))
     gtk_label_set_text(g_log_name_emptyfield, " ");
     gtk_label_set_text(g_log_password_emptyfield, " ");
-
+    
     char *name = gtk_entry_get_text(g_log_name);
     char *password = gtk_entry_get_text(g_log_password);
     
@@ -182,6 +187,8 @@ G_MODULE_EXPORT void on_btn_login_clicked()
     if (flag == 0)
     {    
         
+        snprintf(globalname, 1024,  name);
+        setprofilename();
         //load game intro window
         g_object_unref(builder);
 
@@ -356,17 +363,12 @@ void choose_answer()
 }
 void update_score()
 {
-    
-    snprintf(statement, 1024,"INSERT INTO users (name, password) VALUES('%s','%s')", name, password);
-        if (mysql_query(conn, statement))
+    char updatescore[1024];
+    snprintf(updatescore, 1024,"UPDATE `users` SET `score` = score + %d WHERE users.name = '%s'", score, globalname);
+        if (mysql_query(conn, updatescore))
         {            
-            gtk_label_set_text(g_new_id, "That name already exists!");
-            flag == 1;            
+            mysql_errno(conn);         
         }           
-        else
-        {
-            gtk_label_set_text(g_new_id, "Succesfull Registration" );
-        }
         res = mysql_use_result(conn);
         mysql_free_result(res);
 }
@@ -397,13 +399,10 @@ void build_game()
     gtk_widget_show(game);
 }
 
-
-G_MODULE_EXPORT void on_btn_profile_clicked()
+void setprofilename()
 {
-        gtk_label_set_text(GTK_LABEL(g_profile_name_emptyfield), mysqlname);
-        char *name = gtk_entry_get_text(g_log_name);
-        char statement2[1024];
-        snprintf(statement2, 1024,"SELECT name, score, id FROM users WHERE name = '%s'", name);   
+    char statement2[1024];
+        snprintf(statement2, 1024,"SELECT id, name, score  FROM users WHERE name = '%s'", globalname);   
         if(mysql_query(conn,statement2))
         {
             fprintf(stderr, "%s\n", mysql_error(conn));
@@ -416,13 +415,17 @@ G_MODULE_EXPORT void on_btn_profile_clicked()
          
         while(row = mysql_fetch_row(res))
         {
-            gtk_label_set_text(GTK_LABEL(g_profile_id), "123");
+            gtk_label_set_text(GTK_LABEL(g_profile_id), row[0]);
             gtk_label_set_text(GTK_LABEL(g_profile_name_emptyfield), row[1]);  
             gtk_label_set_text(GTK_LABEL(g_profile_score_emptyfield), row[2]);  
         }
         //free the result
         mysql_free_result(res); 
-        
+}
+
+G_MODULE_EXPORT void on_btn_profile_clicked()
+{        
+        setprofilename();      
 }
 
 
@@ -790,9 +793,12 @@ void game_rounds()
     rounds += 1;
     if(rounds == 5)
     {
-        rounds = 0;
-        game_end();        
+        
+        update_score();
+        game_end(); 
+        rounds = 0;       
         score = 0;
+        
         
     }
 }
@@ -805,8 +811,8 @@ void game_end()
     end_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_endgame"));
     gtk_builder_connect_signals(builder, NULL);
     
-    char stringscore[20] ;    
-    snprintf(stringscore, 20, "Score:\n %d", score);
+    char lastscore[20] ;    
+    snprintf(lastscore, 20, "Score:\n %d", score);
     gtk_label_set_text(g_lb_end_score, "stringscore");      
    
     gtk_widget_show(end_game);
