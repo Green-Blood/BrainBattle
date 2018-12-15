@@ -13,6 +13,7 @@
     GtkWidget   *window;
     GtkWidget   *login;
     GtkWidget   *game;
+    GtkWidget   *end_game;
     
     //Buttons
     GtkButton *g_bt_answer3;
@@ -345,11 +346,29 @@ void choose_answer()
     snprintf(stringscore, 20, "Score:\n %d", score);
     gtk_label_set_text(g_lb_game_score, stringscore);
     //free the result
+
+
     mysql_free_result(res);  
     gtk_widget_hide(window);
-    gtk_widget_hide(window);
+    
     
    
+}
+void update_score()
+{
+    
+    snprintf(statement, 1024,"INSERT INTO users (name, password) VALUES('%s','%s')", name, password);
+        if (mysql_query(conn, statement))
+        {            
+            gtk_label_set_text(g_new_id, "That name already exists!");
+            flag == 1;            
+        }           
+        else
+        {
+            gtk_label_set_text(g_new_id, "Succesfull Registration" );
+        }
+        res = mysql_use_result(conn);
+        mysql_free_result(res);
 }
 
 void build_game()
@@ -742,8 +761,7 @@ void on_bt_answer4_clicked()
             }        
         }     
     }
-    char stringscore[20] ;
-    
+    char stringscore[20] ;    
     snprintf(stringscore, 20, "Score:\n %d", score);
     gtk_label_set_text(g_lb_game_score, stringscore);
     //free the result
@@ -773,23 +791,23 @@ void game_rounds()
     if(rounds == 5)
     {
         rounds = 0;
-        end_game();        
+        game_end();        
         score = 0;
         
     }
 }
 
-void end_game()
+void game_end()
 {
-    //End game window
-    GtkWidget   *end_game;
+    //End game window    
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
     end_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_endgame"));
     gtk_builder_connect_signals(builder, NULL);
-    char stringscore[20];    
-    snprintf(stringscore, 20, "Your Score:\n %d", score);
-    gtk_label_set_text(g_lb_game_score, stringscore);       
+    
+    char stringscore[20] ;    
+    snprintf(stringscore, 20, "Score:\n %d", score);
+    gtk_label_set_text(g_lb_end_score, "stringscore");      
    
     gtk_widget_show(end_game);
     
