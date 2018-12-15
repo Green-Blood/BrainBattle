@@ -2,6 +2,15 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.10"/>
+  <object class="GtkWindow">
+    <property name="can_focus">False</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+  </object>
   <object class="GtkAboutDialog" id="about">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
@@ -49,50 +58,96 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkMessageDialog" id="msg_invalidentry">
+  <object class="GtkWindow" id="window_endgame">
     <property name="can_focus">False</property>
-    <property name="type">popup</property>
-    <property name="resizable">False</property>
     <property name="window_position">center</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="type_hint">dialog</property>
-    <property name="message_type">error</property>
-    <property name="text" translatable="yes">Invalid entry</property>
-    <property name="secondary_text" translatable="yes">Name or Password are incorrect</property>
+    <property name="default_width">480</property>
+    <property name="default_height">320</property>
     <child>
       <placeholder/>
     </child>
-    <child internal-child="vbox">
-      <object class="GtkBox">
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">488</property>
+            <property name="height_request">335</property>
+            <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <property name="homogeneous">True</property>
-            <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="btn_close_invalid_entry">
-                <property name="label">gtk-close</property>
+              <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_btn_close_invalid_entry_clicked" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Game is over!</property>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Your score is 0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">219</property>
+                <property name="margin_top">44</property>
+                <property name="margin_bottom">16</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkButton" id="btn_returnmain">
+                    <property name="label" translatable="yes">Return to Main menu</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="margin_right">25</property>
+                    <signal name="clicked" handler="on_btn_returnmain_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="btn_exitgame">
+                    <property name="label" translatable="yes">Exit game</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="margin_right">9</property>
+                    <signal name="clicked" handler="on_btn_exit_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -113,7 +168,7 @@
         <child>
           <object class="GtkBox" id="gamebox">
             <property name="width_request">1024</property>
-            <property name="height_request">768</property>
+            <property name="height_request">817</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
@@ -342,7 +397,28 @@
                 <property name="position">3</property>
               </packing>
             </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_game_score">
+            <property name="width_request">151</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Score:
+     0</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans 12"/>
+              <attribute name="scale" value="1"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">873</property>
+            <property name="y">37</property>
+          </packing>
         </child>
       </object>
     </child>
@@ -699,6 +775,55 @@
       </object>
     </child>
   </object>
+  <object class="GtkMessageDialog" id="msg_invalidentry">
+    <property name="can_focus">False</property>
+    <property name="type">popup</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="transient_for">window_log</property>
+    <property name="message_type">error</property>
+    <property name="text" translatable="yes">Invalid entry</property>
+    <property name="secondary_text" translatable="yes">Name or Password are incorrect</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_close_invalid_entry">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_btn_close_invalid_entry_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="window_main">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Clash Of Minds</property>
@@ -911,14 +1036,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="bt_profile_refresh">
+              <object class="GtkButton" id="btn_profile">
                 <property name="label" translatable="yes">Refresh</property>
                 <property name="width_request">240</property>
                 <property name="height_request">91</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_bt_profile_refresh_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_btn_profile_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="x">25</property>
