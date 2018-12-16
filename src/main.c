@@ -30,12 +30,19 @@
     GtkWidget   *g_creategame_empty;
     
     //LeaderBoard
-    enum{
-        number = 0;
-        name = 0;
-        score = 0;
-    }
+    GtkWidget *lb_leader_name1;
+    GtkWidget *lb_leader_name2;
+    GtkWidget *lb_leader_name3;
+    GtkWidget *lb_leader_name4;
+    GtkWidget *lb_leader_name5;
+    GtkWidget *lb_leader_score1;
+    GtkWidget *lb_leader_score2;
+    GtkWidget *lb_leader_score3;
+    GtkWidget *lb_leader_score4;
+    GtkWidget *lb_leader_score5;
+   
 
+    
     //Take Account registration values
     GtkEntry *g_new_name;
     GtkEntry *g_new_password;    
@@ -43,9 +50,6 @@
     GtkLabel *g_empty_field1;
     GtkLabel *g_empty_field2;
     
-
-    
-
     //Account login values
     GtkEntry *g_log_name;
     GtkEntry *g_log_password; 
@@ -56,7 +60,6 @@
     GtkLabel *g_profile_name_emptyfield;
     GtkLabel *g_profile_score_emptyfield;
     GtkLabel *g_profile_id;
-    
     
     //Error messages
     GtkMessageDialog *invalid_entry;
@@ -76,9 +79,7 @@
     MYSQL *conn;
     MYSQL_RES *res;
     MYSQL_ROW row;
-    
-    
-
+  
     //SQL Connect
     static char *host = "localhost" ;
     static char *user = "user";
@@ -88,7 +89,6 @@
     unsigned int port = 3306;
     static char *unix_socket = NULL;
     unsigned int flag = 0;
-
     
 int main(int argc, char *argv[])
 {
@@ -111,6 +111,7 @@ int main(int argc, char *argv[])
     gtk_builder_connect_signals(builder, NULL);  
     join_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_join_game"));
     gtk_builder_connect_signals(builder, NULL); 
+    
     //Building registration entries
     g_new_name = GTK_ENTRY(gtk_builder_get_object(builder, "entry_name1"));
     g_new_password = GTK_ENTRY(gtk_builder_get_object(builder,"entry_pass1"));
@@ -120,9 +121,7 @@ int main(int argc, char *argv[])
     
     //Building create and join entries
     g_creategame_name = GTK_ENTRY(gtk_builder_get_object(builder, "entry_create"));
-    g_creategame_empty = GTK_LABEL(gtk_builder_get_object(builder, "lb_create_emptyfield"));
-
-    
+    g_creategame_empty = GTK_LABEL(gtk_builder_get_object(builder, "lb_create_emptyfield"));    
 
     //Building login entries
     g_log_name = GTK_ENTRY(gtk_builder_get_object(builder, "entry_name"));
@@ -134,6 +133,19 @@ int main(int argc, char *argv[])
     g_profile_name_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_empty_profile_name"));
     g_profile_score_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_empty_profile_score"));
     g_profile_id = GTK_LABEL(gtk_builder_get_object(builder, "lb_profile_id"));
+
+    //Building Leaderboard entries
+    lb_leader_name1 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name1"));
+    lb_leader_name2 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name2"));
+    lb_leader_name3 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name3"));
+    lb_leader_name4 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name4"));
+    lb_leader_name5 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name5"));
+    lb_leader_score1 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_score1"));
+    lb_leader_score2 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_score2"));
+    lb_leader_score3 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_score3"));
+    lb_leader_score4 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_score4"));
+    lb_leader_score5 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name1"));
+    
 
     //Building error dialogs
     invalid_entry = GTK_WIDGET(gtk_builder_get_object(builder, "msg_invalidentry"));
@@ -272,6 +284,7 @@ void on_btn_create_clicked()
 
     
 } 
+
 void on_btn_creategame_clicked()
     {
         char *create_game_name = gtk_entry_get_text(g_creategame_name);
@@ -306,13 +319,25 @@ void on_btn_exit_clicked()
     gtk_main_quit();
 }
 
-void on_btn_refresh_clicked()
+void on_btn_leader_refresh_clicked()
 {
-    if(mysql_query(conn,"SELECT *  FROM games "))
+    if(mysql_query(conn,"SELECT *  FROM users ORDER BY score DESC"))
         {
             fprintf(stderr, "%s\n", mysql_error(conn));
             
         }
+    MYSQL_ROW row;
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    
+    while(row = mysql_fetch_row(res))
+    {
+        gtk_label_set_text(GTK_LABEL(g_profile_id), row[0]);
+        gtk_label_set_text(GTK_LABEL(g_profile_name_emptyfield), row[1]);  
+        gtk_label_set_text(GTK_LABEL(g_profile_score_emptyfield), row[2]);  
+    }
+    //free the result
+    mysql_free_result(res); 
 }
 
 void on_btn_join_clicked()
