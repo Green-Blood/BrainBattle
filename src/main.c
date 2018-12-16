@@ -230,7 +230,7 @@ G_MODULE_EXPORT void on_btn_login_clicked()
         
         //load game intro window
         g_object_unref(builder);
-
+        leaders();
         gtk_widget_show(window);       
         gtk_widget_hide(login);
         gtk_main();        
@@ -319,7 +319,7 @@ void on_btn_exit_clicked()
     gtk_main_quit();
 }
 
-void on_btn_leader_refresh_clicked()
+void leaders()
 {
     if(mysql_query(conn,"SELECT *  FROM users ORDER BY score DESC"))
         {
@@ -329,15 +329,43 @@ void on_btn_leader_refresh_clicked()
     MYSQL_ROW row;
     //Store result and add it to the row   
     res = mysql_store_result(conn);  
-    
+    int i = 0;
     while(row = mysql_fetch_row(res))
     {
-        gtk_label_set_text(GTK_LABEL(g_profile_id), row[0]);
-        gtk_label_set_text(GTK_LABEL(g_profile_name_emptyfield), row[1]);  
-        gtk_label_set_text(GTK_LABEL(g_profile_score_emptyfield), row[2]);  
+        i++;        
+        if(i == 1)
+        {
+            gtk_label_set_text(GTK_LABEL(lb_leader_name1), row[1]);  
+            gtk_label_set_text(GTK_LABEL(lb_leader_score1), row[3]);
+        }
+        if(i == 2)
+        {
+            gtk_label_set_text(GTK_LABEL(lb_leader_name2), row[1]);  
+            gtk_label_set_text(GTK_LABEL(lb_leader_score2), row[2]);
+        }
+        if(i == 3)
+        {
+            gtk_label_set_text(GTK_LABEL(lb_leader_name3), row[1]);  
+            gtk_label_set_text(GTK_LABEL(lb_leader_score3), row[2]);
+        }
+        if(i == 4)
+        {
+            gtk_label_set_text(GTK_LABEL(lb_leader_name4), row[1]);  
+            gtk_label_set_text(GTK_LABEL(lb_leader_score4), row[2]);
+        }
+        if(i == 5)
+        {
+            gtk_label_set_text(GTK_LABEL(lb_leader_name5), row[1]);  
+            gtk_label_set_text(GTK_LABEL(lb_leader_score5), row[2]);
+        }    
     }
     //free the result
     mysql_free_result(res); 
+}
+
+void on_btn_leader_refresh_clicked()
+{
+    leaders();
 }
 
 void on_btn_join_clicked()
@@ -359,7 +387,8 @@ void on_btn_join_clicked()
         res = mysql_store_result(conn); 
         //free the result
         mysql_free_result(res); 
-    } 
+    }
+     
 
     // build_game();
     // choose_answer();
