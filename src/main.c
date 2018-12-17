@@ -6,24 +6,23 @@
 #include <mysql/mysql.h>
 
     //Take values   
-    GtkWidget   *g_lb_game_score; //Score in the game
-    GtkWidget   *g_lb_end_score;  //Last score    
-    GtkWidget   *g_lb_question;   
-    GtkBuilder  *builder; 
-    GtkWidget   *window;
-    GtkWidget   *login;
-    GtkWidget   *game;
-    GtkWidget   *end_game;    
-    GtkWidget   *join_game;
-    
-    
-
-    //Buttons
-    GtkButton *g_bt_answer3;
-    GtkButton *g_bt_answer1;
-    GtkButton *g_bt_answer2;
-    GtkButton *g_bt_answer4;
-
+    GtkWidget   *g_lb_game_score;   //Score in the game
+    GtkWidget   *g_lb_end_score;    //Last score    
+    GtkBuilder  *builder;       //GTK Builder 
+    GtkWidget   *window;        //Main menu window
+    GtkWidget   *login;         //Login Window
+    GtkWidget   *end_game;      //EndGame Widget    
+    GtkWidget   *join_game;     //Joining the game  
+    //Game
+        //Actual Game Window
+        GtkWidget   *game;          
+        //Question label
+        GtkWidget   *g_lb_question;     
+        //Buttons
+        GtkButton *g_bt_answer3;
+        GtkButton *g_bt_answer1;
+        GtkButton *g_bt_answer2;
+        GtkButton *g_bt_answer4;
 
     //Create game
     GtkWidget   *create_game;
@@ -41,8 +40,6 @@
     GtkWidget *lb_leader_score3;
     GtkWidget *lb_leader_score4;
     GtkWidget *lb_leader_score5;
-   
-
     
     //Take Account registration values
     GtkEntry *g_new_name;
@@ -66,15 +63,15 @@
     GtkMessageDialog *invalid_entry;
    
     //Static values
-        //User values
-        char static globalname[1024];    
-        char  mysqlname[1024];
-        char  mysqlpass[1024];
-        //Game values
-        int static rounds = 0;
-        int static score = 0;
-        //Creating game values
-        char static game_name[1024];
+    //User values
+    char static globalname[1024];    
+    char  mysqlname[1024];
+    char  mysqlpass[1024];
+    //Game values
+    int static rounds = 0;
+    int static score = 0;
+    //Creating game values
+    char static game_name[1024];
 
     //Sql setup
     MYSQL *conn;
@@ -86,20 +83,21 @@
     static char *user = "user";
     static char *pass = "asdfasdf";
     static char *dbname = "ClashOfMinds";
-
     unsigned int port = 3306;
     static char *unix_socket = NULL;
     unsigned int flag = 0;
     
 int main(int argc, char *argv[])
 {
+    //Mysql initialization
     conn = mysql_init(NULL);
-
+    //Mysql Connection
     if(!(mysql_real_connect(conn,host,user,pass,dbname, port, unix_socket, flag)))
     {
         fprintf(stderr, "Error: %s [%d]\n", mysql_error(conn), mysql_errno(conn));
         exit(1);
     }
+
     //Gtk setup 
     gtk_init(&argc, &argv);
     builder = gtk_builder_new();
@@ -151,18 +149,15 @@ int main(int argc, char *argv[])
     lb_leader_score3 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_score3"));
     lb_leader_score4 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_score4"));
     lb_leader_score5 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name1"));
-    
 
     //Building error dialogs
     invalid_entry = GTK_WIDGET(gtk_builder_get_object(builder, "msg_invalidentry"));
-    
-    g_object_unref(builder);
 
+    g_object_unref(builder);
     gtk_widget_show(login);                
     gtk_main(); 
     return 0;
 }
-
 //Login of player 
 G_MODULE_EXPORT void on_btn_login_clicked()
 {
@@ -224,16 +219,12 @@ G_MODULE_EXPORT void on_btn_login_clicked()
             gtk_label_set_text(g_log_password_emptyfield, "Password is incorrect!");
             flag = 1;      
     }
-
-
     //free the result
     mysql_free_result(res);
 
     if (flag == 0)
-    {   
-        
-        snprintf(globalname, 1024,  name);
-        
+    {          
+        snprintf(globalname, 1024,  name); 
         Login();
         mysql_close(conn);
         
@@ -243,11 +234,10 @@ void Login()
         {
             //load game intro window
             g_object_unref(builder);
-            leaders();
+            leaders(); // Show the leaderboard
             gtk_widget_show(window);       
             gtk_widget_hide(login);
-            gtk_main();        
-            
+            gtk_main();                    
         }
 //Registration of new player
 G_MODULE_EXPORT void on_btn_register_clicked()
@@ -432,7 +422,6 @@ void choose_answer()
     score = 0;
     while(row = mysql_fetch_row(res))
     {
-  
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
         i++;       
         if(i == rand_num)
@@ -476,13 +465,8 @@ void choose_answer()
     snprintf(stringscore, 20, "Score:\n %d", score);
     gtk_label_set_text(g_lb_game_score, stringscore);
     //free the result
-
-
     mysql_free_result(res);  
-    gtk_widget_hide(window);
-    
-    
-   
+    gtk_widget_hide(window); 
 }
 void update_score()
 {
@@ -504,9 +488,6 @@ void build_game()
     
     game = GTK_WIDGET(gtk_builder_get_object(builder, "window_game"));        
     gtk_builder_connect_signals(builder, NULL);
- 
-    
-
 
     //Get the objects for actual game 
     g_lb_question = GTK_WIDGET(gtk_builder_get_object(builder, "lb_question"));
@@ -549,13 +530,11 @@ G_MODULE_EXPORT void on_btn_profile_clicked()
         setprofilename();      
 }
 
-
 G_MODULE_EXPORT void on_btn_close_invalid_entry_clicked()
 {
     
     gtk_widget_hide(invalid_entry);
 }
-
 
 //Executes if first button clicked
 void on_bt_answer1_clicked()
@@ -845,8 +824,6 @@ void on_bt_answer4_clicked()
             }
             ans_choose++;
         }
-        
-        
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
         i++;       
         if(i == rand_num)
@@ -891,15 +868,12 @@ void on_bt_answer4_clicked()
     //free the result
     game_rounds();
     mysql_free_result(res);  
-    gtk_widget_hide(window);
-    
-      
+    gtk_widget_hide(window);     
 }
 
 //Counting of game;
 void game_rounds()
-{    
-  
+{ 
     rounds += 1;
     if(rounds >= 5)
     {
@@ -915,13 +889,10 @@ void game_rounds()
 void game_end()
 {
     //End game window    
-  
     char lastscore[20] ;    
     snprintf(lastscore, 20, "Last Score:\n %d", score);
     gtk_label_set_text(g_lb_end_score, lastscore);      
-   
     gtk_widget_show(end_game);
-    
     gtk_widget_hide(game); 
     gtk_main();      
 }
