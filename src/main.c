@@ -6,17 +6,18 @@
 #include <mysql/mysql.h>
 
     //Take values   
-    GtkWidget   *g_lb_game_score; 
-    GtkWidget   *g_lb_end_score; 
-    GtkWidget   *g_lb_question;
+    GtkWidget   *g_lb_game_score; //Score in the game
+    GtkWidget   *g_lb_end_score;  //Last score    
+    GtkWidget   *g_lb_question;   
     GtkBuilder  *builder; 
     GtkWidget   *window;
     GtkWidget   *login;
     GtkWidget   *game;
-    GtkWidget   *end_game;
-    
+    GtkWidget   *end_game;    
     GtkWidget   *join_game;
     
+    
+
     //Buttons
     GtkButton *g_bt_answer3;
     GtkButton *g_bt_answer1;
@@ -111,7 +112,9 @@ int main(int argc, char *argv[])
     gtk_builder_connect_signals(builder, NULL);  
     join_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_join_game"));
     gtk_builder_connect_signals(builder, NULL); 
-    
+    end_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_endgame"));
+    gtk_builder_connect_signals(builder, NULL);
+
     //Building registration entries
     g_new_name = GTK_ENTRY(gtk_builder_get_object(builder, "entry_name1"));
     g_new_password = GTK_ENTRY(gtk_builder_get_object(builder,"entry_pass1"));
@@ -133,6 +136,9 @@ int main(int argc, char *argv[])
     g_profile_name_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_empty_profile_name"));
     g_profile_score_emptyfield = GTK_LABEL(gtk_builder_get_object(builder, "lb_empty_profile_score"));
     g_profile_id = GTK_LABEL(gtk_builder_get_object(builder, "lb_profile_id"));
+
+    //EndGame
+    g_lb_end_score = GTK_WIDGET(gtk_builder_get_object(builder, "lb_end_score"));
 
     //Building Leaderboard entries
     lb_leader_name1 = GTK_LABEL(gtk_builder_get_object(builder, "lb_leader_name1"));
@@ -228,15 +234,21 @@ G_MODULE_EXPORT void on_btn_login_clicked()
         
         snprintf(globalname, 1024,  name);
         
-        //load game intro window
-        g_object_unref(builder);
-        leaders();
-        gtk_widget_show(window);       
-        gtk_widget_hide(login);
-        gtk_main();        
+        Login();
         mysql_close(conn);
+        
     }   
 }
+void Login()
+        {
+            //load game intro window
+            g_object_unref(builder);
+            leaders();
+            gtk_widget_show(window);       
+            gtk_widget_hide(login);
+            gtk_main();        
+            
+        }
 //Registration of new player
 G_MODULE_EXPORT void on_btn_register_clicked()
 {
@@ -317,6 +329,7 @@ void help_about(GtkWidget *widget)
 void on_btn_exit_clicked()
 {
     gtk_main_quit();
+    exit(1);
 }
 
 void leaders()
@@ -371,29 +384,29 @@ void on_btn_leader_refresh_clicked()
 void on_btn_join_clicked()
 {   
 
-    gtk_widget_show(join_game);
-    gtk_main();
-    void on_box_game_name_changed()
-    {
+    // gtk_widget_show(join_game);
+    // gtk_main();
+    // void on_box_game_name_changed()
+    // {
            
-        if(mysql_query(conn,"SELECT *  FROM games "))
-        {
-            fprintf(stderr, "%s\n", mysql_error(conn));
+    //     if(mysql_query(conn,"SELECT *  FROM games "))
+    //     {
+    //         fprintf(stderr, "%s\n", mysql_error(conn));
             
-        }
+    //     }
 
-        MYSQL_ROW row;
-        //Store result and add it to the row   
-        res = mysql_store_result(conn); 
-        //free the result
-        mysql_free_result(res); 
-    }
+    //     MYSQL_ROW row;
+    //     //Store result and add it to the row   
+    //     res = mysql_store_result(conn); 
+    //     //free the result
+    //     mysql_free_result(res); 
+    // }
      
 
-    // build_game();
-    // choose_answer();
-    // gtk_widget_hide(window);
-    // gtk_main();
+    build_game();
+    choose_answer();
+    gtk_widget_hide(window);
+    gtk_main();
 }
 void choose_answer()
 {
@@ -498,7 +511,7 @@ void build_game()
     //Get the objects for actual game 
     g_lb_question = GTK_WIDGET(gtk_builder_get_object(builder, "lb_question"));
     g_lb_game_score = GTK_WIDGET(gtk_builder_get_object(builder, "lb_game_score"));
-    g_lb_end_score = GTK_WIDGET(gtk_builder_get_object(builder, "lb_end_score"));
+    
     g_bt_answer1 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer1"));
     g_bt_answer2 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer2"));
     g_bt_answer3 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer3"));
@@ -876,37 +889,25 @@ void on_bt_answer4_clicked()
     snprintf(stringscore, 20, "Score:\n %d", score);
     gtk_label_set_text(g_lb_game_score, stringscore);
     //free the result
+    game_rounds();
     mysql_free_result(res);  
     gtk_widget_hide(window);
-    game_rounds();
+    
       
 }
-// get_answer(GtkButton *button, MYSQL_ROW row[])
-// {
-//     if(strcmp(gtk_button_get_label(button), row[2]))
-//     {
-//         score += 1;
-//     }  
-// }
-
-// called when window is closed
-
-
-
 
 //Counting of game;
 void game_rounds()
 {    
   
     rounds += 1;
-    if(rounds == 5)
+    if(rounds >= 5)
     {
         
-        update_score();
+        update_score();        
+        rounds = 0;        
         game_end(); 
-        rounds = 0;       
-        score = 0;
-        
+        score = 0; 
         
     }
 }
@@ -914,14 +915,10 @@ void game_rounds()
 void game_end()
 {
     //End game window    
-    builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder, "glade/window_main.glade", NULL);
-    end_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_endgame"));
-    gtk_builder_connect_signals(builder, NULL);
-    
+  
     char lastscore[20] ;    
-    snprintf(lastscore, 20, "Score:\n %d", score);
-    gtk_label_set_text(g_lb_end_score, "stringscore");      
+    snprintf(lastscore, 20, "Last Score:\n %d", score);
+    gtk_label_set_text(g_lb_end_score, lastscore);      
    
     gtk_widget_show(end_game);
     
@@ -931,7 +928,7 @@ void game_end()
 
 void on_btn_returnmain_clicked()
 {
-    gtk_widget_show(main);
+    Login();
 }
 
 void on_window_main_destroy()

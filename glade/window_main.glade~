@@ -17,55 +17,6 @@
       <placeholder/>
     </child>
     <child>
-      <object class="GtkPaned">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <child>
-          <object class="GtkScrolledWindow">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="resize">False</property>
-            <property name="shrink">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="resize">True</property>
-            <property name="shrink">True</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkWindow">
-    <property name="can_focus">False</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-  </object>
-  <object class="GtkWindow">
-    <property name="can_focus">False</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
       <placeholder/>
     </child>
   </object>
@@ -114,199 +65,7 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkListStore" id="liststorePlayers">
-    <columns>
-      <!-- column-name № -->
-      <column type="gint"/>
-      <!-- column-name Name -->
-      <column type="gchararray"/>
-      <!-- column-name Score -->
-      <column type="gint"/>
-    </columns>
-  </object>
-  <object class="GtkWindow" id="window_create_game">
-    <property name="can_focus">False</property>
-    <property name="default_width">400</property>
-    <property name="default_height">350</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <object class="GtkFixed">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <object class="GtkLabel" id="lb_creategame">
-            <property name="width_request">271</property>
-            <property name="height_request">76</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Create Game</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 14"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="x">65</property>
-            <property name="y">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="entry_create">
-            <property name="width_request">235</property>
-            <property name="height_request">40</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-          </object>
-          <packing>
-            <property name="x">90</property>
-            <property name="y">144</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="width_request">224</property>
-            <property name="height_request">54</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Name of game:</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans 12"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="x">88</property>
-            <property name="y">77</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="btn_creategame">
-            <property name="label" translatable="yes">create</property>
-            <property name="width_request">174</property>
-            <property name="height_request">80</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="on_btn_creategame_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">116</property>
-            <property name="y">239</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lb_create_emptyfield">
-            <property name="width_request">173</property>
-            <property name="height_request">44</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <attributes>
-              <attribute name="foreground" value="#efef29292929"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="x">117</property>
-            <property name="y">189</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkWindow" id="window_endgame">
-    <property name="can_focus">False</property>
-    <property name="window_position">center</property>
-    <property name="default_width">480</property>
-    <property name="default_height">320</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <object class="GtkFixed">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <object class="GtkBox">
-            <property name="width_request">488</property>
-            <property name="height_request">335</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <property name="homogeneous">True</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Game is over!</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="lb_end_score">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">0</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">219</property>
-                <property name="margin_top">44</property>
-                <property name="margin_bottom">16</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <object class="GtkButton" id="btn_returnmain">
-                    <property name="label" translatable="yes">Return to Main menu</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="margin_right">25</property>
-                    <signal name="clicked" handler="on_btn_returnmain_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="btn_exitgame">
-                    <property name="label" translatable="yes">Exit game</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="margin_right">9</property>
-                    <signal name="clicked" handler="on_btn_exit_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
+    <property name="pixbuf">photo_2018-12-16_18-17-31.jpg</property>
   </object>
   <object class="GtkWindow" id="window_game">
     <property name="can_focus">False</property>
@@ -442,7 +201,6 @@
                 <property name="height_request">300</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_top">55</property>
                 <property name="margin_bottom">112</property>
                 <property name="label" translatable="yes">label
 </property>
@@ -493,6 +251,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">image1</property>
                     <signal name="clicked" handler="on_bt_answer3_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -575,6 +334,198 @@
             <property name="x">873</property>
             <property name="y">37</property>
           </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListStore" id="liststorePlayers">
+    <columns>
+      <!-- column-name № -->
+      <column type="gint"/>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+      <!-- column-name Score -->
+      <column type="gint"/>
+    </columns>
+  </object>
+  <object class="GtkWindow" id="window_create_game">
+    <property name="can_focus">False</property>
+    <property name="default_width">400</property>
+    <property name="default_height">350</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel" id="lb_creategame">
+            <property name="width_request">271</property>
+            <property name="height_request">76</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Create Game</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans Bold 14"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">65</property>
+            <property name="y">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="entry_create">
+            <property name="width_request">235</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="x">90</property>
+            <property name="y">144</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width_request">224</property>
+            <property name="height_request">54</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Name of game:</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans 12"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">88</property>
+            <property name="y">77</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_creategame">
+            <property name="label" translatable="yes">create</property>
+            <property name="width_request">174</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_btn_creategame_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">116</property>
+            <property name="y">239</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_create_emptyfield">
+            <property name="width_request">173</property>
+            <property name="height_request">44</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <attributes>
+              <attribute name="foreground" value="#efef29292929"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">117</property>
+            <property name="y">189</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="window_endgame">
+    <property name="can_focus">False</property>
+    <property name="window_position">center</property>
+    <property name="default_width">480</property>
+    <property name="default_height">320</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">488</property>
+            <property name="height_request">335</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkLabel" id="lb_gameover">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Game is over!</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lb_end_score">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">219</property>
+                <property name="margin_top">44</property>
+                <property name="margin_bottom">16</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkButton" id="btn_returnmain">
+                    <property name="label" translatable="yes">Return to Main menu</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="margin_right">25</property>
+                    <signal name="clicked" handler="on_btn_returnmain_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="btn_exitgame">
+                    <property name="label" translatable="yes">Exit game</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="margin_right">9</property>
+                    <signal name="clicked" handler="on_btn_exit_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
         </child>
       </object>
     </child>
@@ -1702,7 +1653,7 @@
             <child>
               <object class="GtkImage" id="logo2">
                 <property name="width_request">196</property>
-                <property name="height_request">135</property>
+                <property name="height_request">142</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
