@@ -62,6 +62,9 @@
     //Error messages
     GtkMessageDialog *invalid_entry;
    
+    //About dialog
+    GtkAboutDialog *about;
+
     //Static values
     //User values
     char static globalname[1024];    
@@ -111,6 +114,9 @@ int main(int argc, char *argv[])
     join_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_join_game"));
     gtk_builder_connect_signals(builder, NULL); 
     end_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_endgame"));
+    gtk_builder_connect_signals(builder, NULL);
+
+    about = GTK_WIDGET(gtk_builder_get_object(builder, "about"));
     gtk_builder_connect_signals(builder, NULL);
 
     //Building registration entries
@@ -310,10 +316,10 @@ void on_btn_creategame_clicked()
 
 
 
-void help_about(GtkWidget *widget)
+void help_about()
 {
-    gtk_dialog_run(GTK_DIALOG(widget));
-    gtk_widget_hide(widget);
+    gtk_dialog_run(GTK_DIALOG(about));
+    
 }
 
 void on_btn_exit_clicked()
