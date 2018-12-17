@@ -2,24 +2,6 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.10"/>
-  <object class="GtkWindow">
-    <property name="can_focus">False</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-  </object>
-  <object class="GtkWindow">
-    <property name="can_focus">False</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-  </object>
   <object class="GtkAboutDialog" id="about">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
@@ -246,6 +228,23 @@
           <packing>
             <property name="x">873</property>
             <property name="y">37</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_game_rounds">
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Round:
+     0</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans 12"/>
+              <attribute name="scale" value="1"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="y">40</property>
           </packing>
         </child>
       </object>
@@ -1021,7 +1020,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="btn_create">
-                        <property name="label" translatable="yes">Create Game</property>
+                        <property name="label" translatable="yes">button</property>
                         <property name="width_request">234</property>
                         <property name="height_request">113</property>
                         <property name="visible">True</property>
@@ -1221,7 +1220,7 @@
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Players name1</property>
+                            <property name="label" translatable="yes">Player name 1</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1234,12 +1233,12 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="lb_leader_score3">
+                          <object class="GtkLabel" id="lb_leader_score1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Score</property>
+                            <property name="label" translatable="yes">0</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1287,7 +1286,7 @@
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Players name2</property>
+                            <property name="label" translatable="yes">Player2</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1300,12 +1299,12 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="lb_leader_score1">
+                          <object class="GtkLabel" id="lb_leader_score2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Score</property>
+                            <property name="label" translatable="yes">0</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1353,7 +1352,7 @@
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Players name3</property>
+                            <property name="label" translatable="yes">Player3</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1366,12 +1365,12 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="lb_leader_score2">
+                          <object class="GtkLabel" id="lb_leader_score3">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Score</property>
+                            <property name="label" translatable="yes">0</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1419,7 +1418,7 @@
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Players name4</property>
+                            <property name="label" translatable="yes">Player4</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1437,7 +1436,7 @@
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Score</property>
+                            <property name="label" translatable="yes">0</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1485,7 +1484,7 @@
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Players name5</property>
+                            <property name="label" translatable="yes">Player5</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
@@ -1503,7 +1502,7 @@
                             <property name="can_focus">False</property>
                             <property name="margin_top">13</property>
                             <property name="margin_bottom">20</property>
-                            <property name="label" translatable="yes">Score</property>
+                            <property name="label" translatable="yes">0</property>
                             <attributes>
                               <attribute name="font-desc" value="Serif 12"/>
                               <attribute name="foreground" value="#48bdcbf1b453"/>
