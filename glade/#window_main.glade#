@@ -486,22 +486,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
-            <property name="width_request">210</property>
-            <property name="height_request">52</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">IP address of server:</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans 12"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="x">100</property>
-            <property name="y">198</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="dropdown_gamename">
             <property name="width_request">196</property>
             <property name="height_request">80</property>
@@ -511,18 +495,6 @@
           <packing>
             <property name="x">107</property>
             <property name="y">128</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lb_gameip">
-            <property name="width_request">160</property>
-            <property name="height_request">51</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="x">126</property>
-            <property name="y">256</property>
           </packing>
         </child>
         <child>
@@ -552,6 +524,34 @@
           <packing>
             <property name="x">88</property>
             <property name="y">77</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_gameip">
+            <property name="width_request">160</property>
+            <property name="height_request">51</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="x">126</property>
+            <property name="y">256</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width_request">210</property>
+            <property name="height_request">52</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">ID of game:</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans 12"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">100</property>
+            <property name="y">198</property>
           </packing>
         </child>
       </object>
@@ -1024,7 +1024,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="btn_create">
-                        <property name="label" translatable="yes">Create Game</property>
+                        <property name="label" translatable="yes">button</property>
                         <property name="width_request">234</property>
                         <property name="height_request">113</property>
                         <property name="visible">True</property>
