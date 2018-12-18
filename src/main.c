@@ -69,7 +69,7 @@
     GtkCssProvider  *provider;
     GdkScreen       *screen;
     GdkDisplay      *display;
-
+    
     //Static values
     //User values
     char static globalname[1024];    
@@ -877,10 +877,10 @@ void game_rounds()
 void setScoreRounds()
 {
     char stringscore[20];    
-    snprintf(stringscore, 20, "Score:\n %d", score);
+    snprintf(stringscore, 20, "%d", score);
     gtk_label_set_text(g_lb_game_score, stringscore);
     char stringrounds[20];    
-    snprintf(stringrounds, 20, "Rounds:\n %d", rounds);
+    snprintf(stringrounds, 20, "%d", rounds);
     gtk_label_set_text(g_lb_game_rounds, stringrounds);
 }
 
@@ -888,7 +888,7 @@ void game_end()
 {
     //End game window    
     char lastscore[20] ;    
-    snprintf(lastscore, 20, "Last Score:\n %d", score);
+    snprintf(lastscore, 20, "%d", score);
     gtk_label_set_text(g_lb_end_score, lastscore);      
     gtk_widget_show(end_game);
     gtk_widget_hide(game); 

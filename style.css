@@ -1,10 +1,143 @@
 
-#lb_login
-{
-    background-color: olive;
-    color: blue;
-}
+@font-face {
+    font-family: "Futura Md BT Medium";
+    src: url("style/futura/TT0142M_.TTF");
+    }
 #btn_login
 {
-    background-color: aqua
+    font-family: 'Futura Md BT Medium';
+    border-radius: 10px;
+    color: white;
+}
+#btn_exit2
+{
+
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;
+    
+}
+#log_entry_name
+{
+    background: transparent;
+    border: none;    
+}
+#log_pass_name
+{
+    background: transparent;
+    border: none;
+}
+#reg_entry_name
+{
+    background: transparent;
+    border: none;    
+}
+#reg_entry_pass
+{
+    background: transparent;
+    border: none;
+}
+#btn_register
+{
+    font-family: 'Futura Md BT Medium';
+    border-radius: 10px;
+    color: white;
+}
+#btn_exit3
+{
+
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;    
+}
+#btn_game_create
+{
+    background: transparent;
+    border: none;  
+}
+#btn_game_join
+{
+    background: transparent;
+    border: none;  
+}
+#btn_game_exit
+{
+    background: transparent;
+    border: none;  
+}
+#menu
+{
+    background: transparent;
+    border: none; 
+}
+#btn_create_newgame
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;  
+}
+#entry_newgame_name
+{
+    background: transparent;
+    border: none;
+}
+#btn_refresh_profile
+{
+    font-family: 'Futura Md BT Medium';
+    border-radius: 10px;
+    color: white;
+}
+#btn_leaderboard_refresh
+{
+    font-family: 'Futura Md BT Medium';
+    border-radius: 10px;
+    color: white;
+}
+#btn_answr1
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;  
+}
+#btn_answr2
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;  
+}
+#btn_answr3
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;  
+}
+#btn_answr4
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;  
+}
+#lb_question
+{
+    color: black; 
+    background-color: white
+}
+#btn_return_main
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white;  
+}
+#btn_exit_over
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white; 
+}
+#btn_join
+{
+    border-radius: 10px;
+    font-family: 'Futura Md BT Medium';
+    color: white; 
+    
 }
