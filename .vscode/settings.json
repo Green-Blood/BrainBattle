@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "gtk.h": "c",
+        "create_game_socket_server.h": "c",
+        "stdlib.h": "c",
+        "gtkrevealer.h": "c",
+        "gdk.h": "c",
+        "gdkconfig.h": "c",
+        "glib.h": "c",
+        "galloca.h": "c",
+        "gtypes.h": "c",
+        "gdkkeysyms.h": "c",
+        "typeinfo": "c",
+        "socket.h": "c"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Disabled"
+}

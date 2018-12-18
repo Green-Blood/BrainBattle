@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <mysql/mysql.h>
 
+#include "../server/create_game_socket_server.h"
+
     //Take values   
     GtkWidget   *g_lb_game_score; 
     GtkWidget   *g_lb_end_score; 
@@ -233,7 +235,10 @@ G_MODULE_EXPORT void on_btn_register_clicked()
 // called when buttons is clicked
 void on_btn_create_clicked()
 {
-    
+
+    //TODO: Waiting window
+
+    open_server_socket(8888);
 } 
 void help_about(GtkWidget *widget)
 {
