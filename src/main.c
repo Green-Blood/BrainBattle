@@ -2,10 +2,19 @@
 #include <stdlib.h>
 #include <gdk/gdkkeysyms.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <mysql/mysql.h>
 
-#include "../server/create_game_socket_server.h"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <string.h>
+#include <arpa/inet.h>
+
+#define POST 8888
+#define IP ""
 
     //Take values   
     GtkWidget   *g_lb_game_score;   //Score in the game
@@ -91,6 +100,12 @@
     unsigned int port = 3306;
     static char *unix_socket = NULL;
     unsigned int flag = 0;
+
+    // Client side C program to demonstrate Socket programming
+    struct sockaddr_in client_address, serv_addr;
+    int client_socket = 0, client_valread;
+    
+    #define PORT 8888
     
 int main(int argc, char *argv[])
 {
@@ -911,4 +926,36 @@ void on_btn_returnmain_clicked()
 void on_window_main_destroy()
 {     
       
+}
+
+void join(){
+    
+    char buffer[1024] = {0}, cchat[1024];
+    char *bye = "bye";
+    
+    printf("CREATING CLIENT SOCKET .....\n");
+    if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Socket creation error \n");
+        return -1;
+    }
+    printf("DEFINING SOCKET FAMILY, ADDRESS & PORT .....\n");
+    memset(&serv_addr, '0', sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+    
+    // Convert IPv4 and IPv6 addresses from text to binary form
+    if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0)
+    {
+        printf("\nInvalid address/ Address not supported \n");
+        return -1;
+    }
+
+    printf("CLIENT CONNECTING ON PORT 8080 TO COMMUNICATE WITH SERVER..\n");
+    if (connect(client_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
+    
 }

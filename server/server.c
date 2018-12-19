@@ -9,17 +9,40 @@
 #include <sys/socket.h> 
 #include <netinet/in.h> 
 #include <sys/time.h>
+#include <mysql/mysql.h>
 	
 #define TRUE 1 
 #define FALSE 0 
-#define PORT 8888 
+#define PORT 8888
+
+MYSQL *conn;
+MYSQL_RES *res;
+MYSQL_ROW row;
+const static char *host = "localhost" ;
+const static char *user = "user";
+const static char *pass = "asdfasdf";
+const static char *dbname = "ClashOfMinds";
+const unsigned int port = 3306;
+const static char *unix_socket = NULL;
+const unsigned int flag = 0;
+
+//a messages
+	char *wait_msg = "wait_client\n";
+	char *start_msg = "start_game\n";
+	char *end_msg = "end_game\n";
+	char *close_client = "close_client";
+	char *answer = "answer";
+	char *join = "join_game";
+	char *create_game = "create_game";
 	
 int main(int argc , char *argv[]) 
 { 
 	int opt = TRUE; 
-	int master_socket , addrlen , new_socket , client_socket[3] , max_clients = 3 , activity, index , valread , sd;
+	int master_socket , addrlen , new_socket , client_socket[30] , max_clients = 30 , activity, index , valread , sd;
 	int number_of_clients = 0; 
 	int max_sd; 
+	int num_of_players = 0;
+	int num_of_max_players = 5;
 
 	struct sockaddr_in address; 
 		
@@ -28,12 +51,6 @@ int main(int argc , char *argv[])
 	//set of socket descriptors 
 	fd_set readfds; 
 		
-	//a message 
-	char *wait_msg = "wait_client\n";
-	char *start_msg = "start_game\n";
-	char *end_msg = "end_game\n";
-	char *close_client = "close_client";
-	char *answer = "answer";
 	
 	//initialise all client_socket[] to 0 so not checked 
 	for (index = 0; index < max_clients; index++) 
@@ -143,21 +160,6 @@ int main(int argc , char *argv[])
 					break; 
 				} 
 			} 
-
-			if(number_of_clients == max_clients){
-				//send start_game if max number of clients is reached
-				for(index = 0; index < max_clients; index++){
-					if(send(client_socket[index], start_msg, strlen(start_msg), 0) != strlen(start_msg))
-						perror("send");
-				}
-			}
-			else{
-				//send wait_msg if max number of clients is not reached
-				if( send(new_socket, wait_msg, strlen(wait_msg), 0) != strlen(wait_msg) ) 
-				{ 
-					perror("send"); 
-				}
-			}
 			
 		} 
 			
@@ -195,13 +197,33 @@ int main(int argc , char *argv[])
 					close( sd ); 
 					client_socket[index] = 0;
 				}
-				else if(strncmp(buffer, answer,6) == 0)
+				else if(strncmp(buffer, create_game,11) == 0)
 				{ 
-					//set the string terminating NULL byte on the end 
-					//of the data read 
-					char* answer_accept = "answer is accepted\n\n";
-					send(sd , answer_accept , strlen(answer_accept) , 0 ); 
-				} 
+					// //set the string terminating NULL byte on the end 
+					// //of the data read 
+					send(sd , wait_msg , strlen(wait_msg) , 0 ); 
+					num_of_players++;
+
+				} else if(strncmp(buffer, join, 9) == 0){
+
+					num_of_players++;
+
+					if(num_of_players == num_of_max_players){
+					//send start_game if max number of clients is reached
+					for(index = 0; index < num_of_max_players; index++){
+						if(send(client_socket[index], start_msg, strlen(start_msg), 0) != strlen(start_msg))
+							perror("send");
+						}
+					}
+					else{
+						//send wait_msg if max number of clients is not reached
+						if( send(new_socket, wait_msg, strlen(wait_msg), 0) != strlen(wait_msg) ) 
+						{ 
+							perror("send"); 
+						}
+					}
+
+				}
 			} 
 		} 
 	} 
