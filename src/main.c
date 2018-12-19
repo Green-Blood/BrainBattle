@@ -34,6 +34,8 @@
         GtkButton *g_bt_answer1;
         GtkButton *g_bt_answer2;
         GtkButton *g_bt_answer4;
+        GtkWidget *g_lb_game_score;   //Score in the game
+        GtkWidget *g_lb_game_rounds;   //Rounds in the game
 
     //Create game
     GtkWidget   *create_game;
@@ -75,6 +77,10 @@
    
     //About dialog
     GtkAboutDialog *about;
+    //Css values
+    GtkCssProvider  *provider;
+    GdkScreen       *screen;
+    GdkDisplay      *display;
 
     //Static values
     //User values
@@ -176,11 +182,19 @@ int main(int argc, char *argv[])
     //Building error dialogs
     invalid_entry = GTK_WIDGET(gtk_builder_get_object(builder, "msg_invalidentry"));
 
+    //stlyesheet connecting part
+    provider = gtk_css_provider_new();
+    display = gdk_display_get_default();
+    screen = gdk_display_get_default_screen (display);
+    gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+    gtk_css_provider_load_from_path(GTK_CSS_PROVIDER(provider),"style.css",NULL);
+
     g_object_unref(builder);
     gtk_widget_show(login);                
     gtk_main(); 
     return 0;
 }
+
 //Login of player 
 G_MODULE_EXPORT void on_btn_login_clicked()
 {
@@ -191,12 +205,10 @@ G_MODULE_EXPORT void on_btn_login_clicked()
     char *name = gtk_entry_get_text(g_log_name);
     char *password = gtk_entry_get_text(g_log_password);
     
-    int flag = 0;
-    
+    int flag = 0;    
     //Check if the name field is empty or not
     if (!strcmp("", name)){
-        gtk_label_set_text(g_log_name_emptyfield, "This field can't be empty!");
-        
+        gtk_label_set_text(g_log_name_emptyfield, "This field can't be empty!");        
         flag = 1;
     }
     //Check if the password field is empty or not
@@ -305,7 +317,7 @@ G_MODULE_EXPORT void on_btn_register_clicked()
 void on_btn_create_clicked()
 {
     gtk_widget_show(create_game);
-    gtk_main();
+    gtk_main();    
 } 
 
 void on_btn_creategame_clicked()
@@ -320,17 +332,12 @@ void on_btn_creategame_clicked()
         }           
         else
         {
-            gtk_label_set_text(g_creategame_empty, "Succesfull creating" );
+            gtk_label_set_text(g_creategame_empty, "Succesfull created" );
         }
         res = mysql_use_result(conn);
         mysql_free_result(res);
-        snprintf(game_name, 1024, create_game_name);
-        
+        snprintf(game_name, 1024, create_game_name);        
     }
-
-
-
-
 void help_about()
 {
     gtk_dialog_run(GTK_DIALOG(about));
@@ -345,10 +352,9 @@ void on_btn_exit_clicked()
 
 void leaders()
 {
-    if(mysql_query(conn,"SELECT *  FROM users ORDER BY score DESC"))
+    if(mysql_query(conn,"SELECT * FROM users ORDER BY score DESC"))
         {
-            fprintf(stderr, "%s\n", mysql_error(conn));
-            
+            fprintf(stderr, "%s\n", mysql_error(conn));            
         }
     MYSQL_ROW row;
     //Store result and add it to the row   
@@ -365,22 +371,22 @@ void leaders()
         if(i == 2)
         {
             gtk_label_set_text(GTK_LABEL(lb_leader_name2), row[1]);  
-            gtk_label_set_text(GTK_LABEL(lb_leader_score2), row[2]);
+            gtk_label_set_text(GTK_LABEL(lb_leader_score2), row[3]);
         }
         if(i == 3)
         {
             gtk_label_set_text(GTK_LABEL(lb_leader_name3), row[1]);  
-            gtk_label_set_text(GTK_LABEL(lb_leader_score3), row[2]);
+            gtk_label_set_text(GTK_LABEL(lb_leader_score3), row[3]);
         }
         if(i == 4)
         {
             gtk_label_set_text(GTK_LABEL(lb_leader_name4), row[1]);  
-            gtk_label_set_text(GTK_LABEL(lb_leader_score4), row[2]);
+            gtk_label_set_text(GTK_LABEL(lb_leader_score4), row[3]);
         }
         if(i == 5)
         {
             gtk_label_set_text(GTK_LABEL(lb_leader_name5), row[1]);  
-            gtk_label_set_text(GTK_LABEL(lb_leader_score5), row[2]);
+            gtk_label_set_text(GTK_LABEL(lb_leader_score5), row[3]);
         }    
     }
     //free the result
@@ -411,8 +417,7 @@ void on_btn_join_clicked()
     //     res = mysql_store_result(conn); 
     //     //free the result
     //     mysql_free_result(res); 
-    // }
-     
+    // }    
 
     build_game();
     choose_answer();
@@ -422,7 +427,7 @@ void on_btn_join_clicked()
 void choose_answer()
 {
     //Write sql code into an variable and send the query to find the password   
-    if (mysql_query(conn, "SELECT * FROM `questions`  " ))
+    if (mysql_query(conn, "SELECT * FROM `questions` " ))
     {
             fprintf(stderr, "%s\n", mysql_error(conn));                       
     }   
@@ -439,7 +444,7 @@ void choose_answer()
     MYSQL_ROW row;
     //create random number and counter      
     int rand_num = rand() % mysql_num_rows(res);
-    int i=0;
+    int i = 0;
     score = 0;
     while(row = mysql_fetch_row(res))
     {
@@ -482,9 +487,8 @@ void choose_answer()
         }     
     }
     
-    char stringscore[20];    
-    snprintf(stringscore, 20, "Score:\n %d", score);
-    gtk_label_set_text(g_lb_game_score, stringscore);
+    setScoreRounds();
+    game_rounds();
     //free the result
     mysql_free_result(res);  
     gtk_widget_hide(window); 
@@ -513,6 +517,7 @@ void build_game()
     //Get the objects for actual game 
     g_lb_question = GTK_WIDGET(gtk_builder_get_object(builder, "lb_question"));
     g_lb_game_score = GTK_WIDGET(gtk_builder_get_object(builder, "lb_game_score"));
+    g_lb_game_rounds = GTK_WIDGET(gtk_builder_get_object(builder, "lb_game_rounds"));
     
     g_bt_answer1 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer1"));
     g_bt_answer2 = GTK_WIDGET(gtk_builder_get_object(builder, "bt_answer2"));
@@ -528,10 +533,8 @@ void setprofilename()
         snprintf(statement2, 1024,"SELECT id, name, score  FROM users WHERE name = '%s'", globalname);   
         if(mysql_query(conn,statement2))
         {
-            fprintf(stderr, "%s\n", mysql_error(conn));
-            
+            fprintf(stderr, "%s\n", mysql_error(conn));            
         }
-
         MYSQL_ROW row;
         //Store result and add it to the row   
         res = mysql_store_result(conn);  
@@ -579,26 +582,24 @@ void on_bt_answer1_clicked()
     //create random number and counter      
     int rand_num = rand() % mysql_num_rows(res);
     int i=0;
+
     int ans_choose = 0;
     
     while(row = mysql_fetch_row(res))
     {
-        if(ans_choose == 0)
-        {
+           
+        
             if(strcmp(gtk_button_get_label(g_bt_answer1), row[2]) == 0) 
             {
                 score +=1;
             }
-            ans_choose++;
-        }
-        
-        
+             
+             
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
-        i++;       
+               
         if(i == rand_num)
         {
-        
-            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
+                         
             
             int rand_but = rand() % 4;
             if(rand_but == 1)
@@ -628,16 +629,14 @@ void on_bt_answer1_clicked()
                 gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
                 gtk_button_set_label(g_bt_answer4, row[rand_but]);
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
-            }        
+            }
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);         
         }     
     }
     
-    char stringscore[20];    
-    snprintf(stringscore, 20, "Score:\n %d", score);
-    gtk_label_set_text(g_lb_game_score, stringscore);
+    setScoreRounds();
     //free the result
-    mysql_free_result(res);  
-    gtk_widget_hide(window);
+    mysql_free_result(res);      
     game_rounds();
    
 }
@@ -667,22 +666,20 @@ void on_bt_answer2_clicked()
     
     while(row = mysql_fetch_row(res))
     {
-        if(ans_choose == 0)
+           
         {
             if(strcmp(gtk_button_get_label(g_bt_answer2), row[2]) == 0) 
             {
                 score +=1;
             }
-            ans_choose++;
+             
         }
         
         
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
         i++;       
         if(i == rand_num)
-        {
-        
-            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
+        {             
             
             int rand_but = rand() % 4;
             if(rand_but == 1)
@@ -712,13 +709,11 @@ void on_bt_answer2_clicked()
                 gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
                 gtk_button_set_label(g_bt_answer4, row[rand_but]);
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
-            }        
+            } 
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);        
         }     
     }
-    char stringscore[20] ;
-    
-    snprintf(stringscore, 20, "Score:\n %d", score);
-    gtk_label_set_text(g_lb_game_score, stringscore);
+    setScoreRounds();
     //free the result
     mysql_free_result(res);  
     gtk_widget_hide(window); 
@@ -752,13 +747,13 @@ void on_bt_answer3_clicked()
     
     while(row = mysql_fetch_row(res))
     {
-        if(ans_choose == 0)
+           
         {
             if(strcmp(gtk_button_get_label(g_bt_answer3), row[2]) == 0) 
             {
                 score +=1;
             }
-            ans_choose++;
+             
         }
         
         
@@ -767,8 +762,6 @@ void on_bt_answer3_clicked()
         if(i == rand_num)
         {
         
-            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
-            
             int rand_but = rand() % 4;
             if(rand_but == 1)
             {
@@ -797,20 +790,18 @@ void on_bt_answer3_clicked()
                 gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
                 gtk_button_set_label(g_bt_answer4, row[rand_but]);
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
-            }        
+            }
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);         
         }     
     }
-    char stringscore[20] ;
     
-    snprintf(stringscore, 20, "Score:\n %d", score);
-    gtk_label_set_text(g_lb_game_score, stringscore);
+    setScoreRounds();
     //free the result
     mysql_free_result(res);  
     gtk_widget_hide(window);
     game_rounds();
    
 }
-
 //Executes when button4 clicked
 void on_bt_answer4_clicked()
 {
@@ -832,26 +823,24 @@ void on_bt_answer4_clicked()
     MYSQL_ROW row;
     //create random number and counter      
     int rand_num = rand() % mysql_num_rows(res);
-    int i=0;
+    int i = 0;
     int ans_choose = 0;
     
     while(row = mysql_fetch_row(res))
     {
-        if(ans_choose == 0)
+           
         {
             if(strcmp(gtk_button_get_label(g_bt_answer4), row[2]) == 0) 
             {
                 score +=1;
             }
-            ans_choose++;
+             
         }
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
         i++;       
         if(i == rand_num)
         {
         
-            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
-            
             int rand_but = rand() % 4;
             if(rand_but == 1)
             {
@@ -880,12 +869,11 @@ void on_bt_answer4_clicked()
                 gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
                 gtk_button_set_label(g_bt_answer4, row[rand_but]);
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
-            }        
+            } 
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);        
         }     
     }
-    char stringscore[20] ;    
-    snprintf(stringscore, 20, "Score:\n %d", score);
-    gtk_label_set_text(g_lb_game_score, stringscore);
+    setScoreRounds();
     //free the result
     game_rounds();
     mysql_free_result(res);  
@@ -896,15 +884,22 @@ void on_bt_answer4_clicked()
 void game_rounds()
 { 
     rounds += 1;
-    if(rounds >= 5)
-    {
-        
+    if(rounds >= 22)
+    {        
         update_score();        
         rounds = 0;        
         game_end(); 
-        score = 0; 
-        
+        score = 0;     
     }
+}
+void setScoreRounds()
+{
+    char stringscore[20];    
+    snprintf(stringscore, 20, "Score:\n %d", score);
+    gtk_label_set_text(g_lb_game_score, stringscore);
+    char stringrounds[20];    
+    snprintf(stringrounds, 20, "Rounds:\n %d", rounds);
+    gtk_label_set_text(g_lb_game_rounds, stringrounds);
 }
 
 void game_end()
@@ -917,6 +912,7 @@ void game_end()
     gtk_widget_hide(game); 
     gtk_main();      
 }
+
 
 void on_btn_returnmain_clicked()
 {
@@ -943,7 +939,7 @@ void join(){
     memset(&serv_addr, '0', sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
-    
+
     // Convert IPv4 and IPv6 addresses from text to binary form
     if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0)
     {
