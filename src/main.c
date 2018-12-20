@@ -24,7 +24,8 @@
     GtkWidget   *window;        //Main menu window
     GtkWidget   *login;         //Login Window
     GtkWidget   *end_game;      //EndGame Widget    
-    GtkWidget   *join_game;     //Joining the game  
+    GtkWidget   *join_game;     //Joining the game 
+    GtkWidget   *not_created    //Not created window 
     //Game
         //Actual Game Window
         GtkWidget   *game;          
@@ -143,6 +144,10 @@ int main(int argc, char *argv[])
     gtk_builder_connect_signals(builder, NULL); 
     end_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_endgame"));
     gtk_builder_connect_signals(builder, NULL);
+    //Building not created game
+    not_created = GTK_WIDGET(gtk_builder_get_object(builder, "window_notcreated"));
+    gtk_builder_connect_signals(builder, NULL);
+
 
     about = GTK_WIDGET(gtk_builder_get_object(builder, "about"));
     gtk_builder_connect_signals(builder, NULL);
