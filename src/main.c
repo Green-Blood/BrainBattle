@@ -13,8 +13,8 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-#define POST 8888
-#define IP ""
+
+#define IP "192.168.43.11"
 
     //Take values   
     GtkWidget   *g_lb_game_score;   //Score in the game
@@ -417,8 +417,10 @@ void on_btn_join_clicked()
     //     res = mysql_store_result(conn); 
     //     //free the result
     //     mysql_free_result(res); 
-    // }    
-
+    // }   
+    
+    join();
+    
     build_game();
     choose_answer();
     gtk_widget_hide(window);
@@ -959,7 +961,7 @@ void join(){
         return -1;
     }
 
-    
+    send(client_socket, "join_game", 9, 0);
 
     while(1)
     {
@@ -968,8 +970,14 @@ void join(){
 
         if(strncmp(buffer, wait_client,11) == 0){
             //TODO: Open wait window
+            gtk_widget_show(create_game);
+            break;
         } else if(strncmp(buffer, start_game,11) == 0){
             //TODO: START GAME
+            build_game();
+            choose_answer();
+            gtk_widget_hide(window);
+            gtk_main();
             break;
         }
         
