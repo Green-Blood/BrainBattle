@@ -115,6 +115,21 @@
     // Client side C program to demonstrate Socket programming
     struct sockaddr_in client_address, serv_addr;
     int client_socket = 0, client_valread;
+
+    char buffer[1024];
+    int valread;
+    //Client commands
+    const char *j_game = "join_game";
+    const char *wait_client = "wait_client";
+    const char *c_game = "create_game";
+    const char *start_game = "start_game";
+    const char *reg_user = "reg_user";
+    const char *upd_score = "upd_score";
+	const char *game_not_created = "game_not_created";
+
+    void join();
+    void splitStringToArray(char buf[], char* array[]);
+    void connectToSocket();
     
     #define PORT 8888
     
@@ -129,6 +144,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error: %s [%d]\n", mysql_error(conn), mysql_errno(conn));
         exit(1);
     }
+
+    connectToSocket();
 
     //Gtk setup 
     gtk_init(&argc, &argv);
@@ -346,7 +363,11 @@ void on_btn_creategame_clicked()
         }
         res = mysql_use_result(conn);
         mysql_free_result(res);
-        snprintf(game_name, 1024, create_game_name);        
+        snprintf(game_name, 1024, create_game_name); 
+
+        //send create_game msg
+        send(client_socket, c_game,strlen(c_game), 0); 
+
     }
 void help_about()
 {
@@ -431,10 +452,10 @@ void on_btn_join_clicked()
     
     //join();
     
-    build_game();
-    choose_answer();
-    gtk_widget_hide(window);
-    gtk_main();
+    // build_game();
+    // choose_answer();
+    // gtk_widget_hide(window);
+    // gtk_main();
 }
 void choose_answer()
 {
@@ -947,61 +968,73 @@ void on_window_main_destroy()
       
 }
 
-// void join(){
-    
-//     char buffer[1024];
-//     char *j_game = "join_to_game";
-//     int valread;
-//     int serv_socket;
-//     char *wait_client = "wait_client";
-//     char *start_game = "start_game";
-    
-//     printf("CREATING CLIENT SOCKET .....\n");
-//     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-//     {
-//         printf("\n Socket creation error \n");
-//         return -1;
-//     }
-//     printf("DEFINING SOCKET FAMILY, ADDRESS & PORT .....\n");
-//     memset(&serv_addr, '0', sizeof(serv_addr));
-//     serv_addr.sin_family = AF_INET;
-//     serv_addr.sin_port = htons(PORT);
-//     memset(buffer, 0, sizeof(buffer));
+void connectToSocket(){
+       
+    printf("CREATING CLIENT SOCKET .....\n");
+    if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Socket creation error \n");
+        return -1;
+    }
+    printf("DEFINING SOCKET FAMILY, ADDRESS & PORT .....\n");
+    memset(&serv_addr, '0', sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+    memset(buffer, 0, sizeof(buffer));
 
-//     // Convert IPv4 and IPv6 addresses from text to binary form
-//     if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0)
-//     {
-//         printf("\nInvalid address/ Address not supported \n");
-//         return -1;
-//     }
+    // Convert IPv4 and IPv6 addresses from text to binary form
+    if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0)
+    {
+        printf("\nInvalid address/ Address not supported \n");
+        return -1;
+    }
 
-//     printf("CLIENT CONNECTING ON PORT 8080 TO COMMUNICATE WITH SERVER..\n");
-//     if (connect(client_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-//     {
-//         printf("\nConnection Failed \n");
-//         return -1;
-//     }
+    printf("CLIENT CONNECTING ON PORT 8080 TO COMMUNICATE WITH SERVER..\n");
+    if (connect(client_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
+}
 
-//     send(client_socket, "join_game", 9, 0);
+void join(){
 
-//     while(1)
-//     {
+    send(client_socket, j_game, strlen(j_game), 0);
+
+    while(1)
+    {
         
-//         valread = read( client_socket , buffer, 1024);
+        valread = read( client_socket , buffer, 1024);
 
-//         if(strncmp(buffer, wait_client,11) == 0){
-//             //TODO: Open wait window
-//             gtk_widget_show(create_game);
-//             break;
-//         } else if(strncmp(buffer, start_game,11) == 0){
-//             //TODO: START GAME
-//             build_game();
-//             choose_answer();
-//             gtk_widget_hide(window);
-//             gtk_main();
-//             break;
-//         }
+        if(strncmp(buffer, wait_client,11) == 0){
+            //TODO: Open wait window
+            gtk_widget_show(create_game); 
+              
+        } else if(strncmp(buffer, start_game,11) == 0){
+            //TODO: START GAME
+            build_game();
+            choose_answer();
+            gtk_widget_hide(window);
+            gtk_main();
+            break;
+        } else if(strncmp(buffer, game_not_created,16) == 0){
+            //TODO: Game is not created
+
+            break;
+        }
         
-//     }
+    }
     
-// }
+}
+
+void splitStringToArray(char buf[], char* array[]){
+    int i = 0;
+    char *p = strtok (buf, "/");
+
+    while (p != NULL)
+    {
+        array[i++] = p;
+        p = strtok (NULL, "/");
+    }
+    
+}
