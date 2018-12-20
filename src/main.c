@@ -926,8 +926,12 @@ void on_window_main_destroy()
 
 void join(){
     
-    char buffer[1024] = {0}, cchat[1024];
-    char *bye = "bye";
+    char buffer[1024];
+    char *j_game = "join_to_game";
+    int valread;
+    int serv_socket;
+    char *wait_client = "wait_client";
+    char *start_game = "start_game";
     
     printf("CREATING CLIENT SOCKET .....\n");
     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -939,6 +943,7 @@ void join(){
     memset(&serv_addr, '0', sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
+    memset(buffer, 0, sizeof(buffer));
 
     // Convert IPv4 and IPv6 addresses from text to binary form
     if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0)
@@ -952,6 +957,22 @@ void join(){
     {
         printf("\nConnection Failed \n");
         return -1;
+    }
+
+    
+
+    while(1)
+    {
+        
+        valread = read( client_socket , buffer, 1024);
+
+        if(strncmp(buffer, wait_client,11) == 0){
+            //TODO: Open wait window
+        } else if(strncmp(buffer, start_game,11) == 0){
+            //TODO: START GAME
+            break;
+        }
+        
     }
     
 }

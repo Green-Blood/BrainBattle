@@ -34,6 +34,13 @@ const unsigned int flag = 0;
 	char *answer = "answer";
 	char *join = "join_game";
 	char *create_game = "create_game";
+	char *finish_game = "finish_game";
+	char *send_score = "score_game";
+
+	int GAME_IS_STARTED = 0;
+	int GAME_IS_FINISHED = 1;
+
+	int SCORE;
 	
 int main(int argc , char *argv[]) 
 { 
@@ -173,6 +180,10 @@ int main(int argc , char *argv[])
 				//Check if it was for closing , and also read the 
 				//incoming message 
 				valread = read( sd , buffer, 1024);
+
+				if(GAME_IS_FINISHED == 0 && GAME_IS_STARTED == 1){
+					SCORE = buffer[sizeof(send_score)];
+				}
 				
 				if (valread == 0) 
 				{ 
@@ -203,6 +214,8 @@ int main(int argc , char *argv[])
 					// //of the data read 
 					send(sd , wait_msg , strlen(wait_msg) , 0 ); 
 					num_of_players++;
+					GAME_IS_STARTED = 1;
+					GAME_IS_FINISHED = 0;
 
 				} else if(strncmp(buffer, join, 9) == 0){
 
@@ -223,6 +236,9 @@ int main(int argc , char *argv[])
 						}
 					}
 
+				} else if(strncmp(buffer, finish_game, 11)){
+					GAME_IS_FINISHED = 1;
+					GAME_IS_STARTED = 0;
 				}
 			} 
 		} 
