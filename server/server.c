@@ -38,9 +38,9 @@ const unsigned int flag = 0;
 	const char *send_score = "game_score";
 	const char *game_not_created = "game_not_created";
 
-	int GAME_STARTED = 0;
-	int GAME_CREATED = 0;
-	int GAME_FINISHED = 1;
+	static int GAME_STARTED = 0;
+	static int GAME_CREATED = 0;
+	static int GAME_FINISHED = 1;
 
 	int SCORE;
 	
@@ -96,7 +96,7 @@ int main(int argc , char *argv[])
 	printf("Listener on port %d \n", PORT); 
 		
 	//try to specify maximum of 3 pending connections for the master socket 
-	if (listen(master_socket, 3) < 0) 
+	if (listen(master_socket, 6) < 0) 
 	{ 
 		perror("listen"); 
 		exit(EXIT_FAILURE); 
@@ -183,9 +183,9 @@ int main(int argc , char *argv[])
 				//incoming message 
 				valread = read( sd , buffer, 1024);
 
-				if(GAME_FINISHED == 0 && GAME_STARTED == 1){
-					SCORE = buffer[strlen(send_score)];
-				}
+				// if(GAME_FINISHED == 0 && GAME_STARTED == 1){
+				// 	SCORE = buffer[strlen(send_score)];
+				// }
 				
 				if (valread == 0) 
 				{ 
@@ -197,6 +197,7 @@ int main(int argc , char *argv[])
 					//Close the socket and mark as 0 in list for reuse 
 					close( sd ); 
 					client_socket[index] = 0; 
+					num_of_players--;
 				} 
 				//Echo back the message that came in
 				else if (strncmp(buffer, close_client, 12) == 0)
@@ -209,15 +210,17 @@ int main(int argc , char *argv[])
 					//Close the socket and mark as 0 in list for reuse 
 					close( sd ); 
 					client_socket[index] = 0;
+					num_of_players--;
 				}
 				else if(strncmp(buffer, create_game,11) == 0)
 				{ 
-					// //set the string terminating NULL byte on the end 
-					// //of the data read 
+					
 					send(sd , wait_msg , strlen(wait_msg) , 0 ); 
 					num_of_players++;
 					GAME_CREATED = 1;
 					GAME_FINISHED = 0;
+
+					printf("%s\n", "GAME IS CREATED");
 
 				} else if(strncmp(buffer, join, 9) == 0){
 
@@ -235,14 +238,17 @@ int main(int argc , char *argv[])
 						}
 						else{
 							//send wait_msg if max number of clients is not reached
-							if( send(new_socket, wait_msg, strlen(wait_msg), 0) != strlen(wait_msg) ) 
+							if( send(sd, wait_msg, strlen(wait_msg), 0) != strlen(wait_msg) ) 
 							{ 
 								perror("send"); 
 							}
 						}
+						printf("%s\n", "NEW PLAYER JOINED");
+
 					} else {
 
-						send(new_socket, game_not_created, strlen(game_not_created), 0);
+						send(sd, game_not_created, strlen(game_not_created), 0);
+						printf("%s\n", "GAME IS NOT CREATED");
 						
 					}
 

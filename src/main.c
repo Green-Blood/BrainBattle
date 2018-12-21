@@ -15,7 +15,8 @@
 #include <arpa/inet.h>
 
 
-#define IP "192.168.43.11"
+// #define IP "192.168.43.11"
+#define IP "127.0.0.1"
 
     //Take values   
     GtkWidget   *g_lb_game_score;   //Score in the game
@@ -39,7 +40,7 @@
         GtkWidget *g_lb_game_rounds;   //Rounds in the game
 
     //Create game
-    GtkWidget   *create_game;
+    GtkWidget   *wait_game;
     GtkEntry    *g_creategame_name;
     GtkWidget   *g_creategame_empty;
     
@@ -118,12 +119,14 @@
     char buffer[1024];
     int valread;
     //Client commands
-    const char *j_game = "join_game";
-    const char *wait_client = "wait_client";
-    const char *c_game = "create_game";
-    const char *start_game = "start_game";
-    const char *reg_user = "reg_user";
-    const char *upd_score = "upd_score";
+    const char *wait_msg = "wait_client";
+	const char *start_msg = "start_game";
+	const char *end_msg = "end_game";
+	const char *close_msg = "close_msg";
+	const char *join_msg = "join_game";
+	const char *create_msg = "create_game";
+	const char *finish_msg = "finish_game";
+	const char *send_score = "game_score";
 	const char *game_not_created = "game_not_created";
 
     void join();
@@ -154,7 +157,7 @@ int main(int argc, char *argv[])
     gtk_builder_connect_signals(builder, NULL);
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
     gtk_builder_connect_signals(builder, NULL);  
-    create_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_create_game"));
+    wait_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_create_game"));
     gtk_builder_connect_signals(builder, NULL);  
     join_game = GTK_WIDGET(gtk_builder_get_object(builder, "window_join_game"));
     gtk_builder_connect_signals(builder, NULL); 
@@ -296,6 +299,7 @@ void Login()
             gtk_widget_hide(login);
             gtk_main();                    
         }
+        
 //Registration of new player
 G_MODULE_EXPORT void on_btn_register_clicked()
 {
@@ -338,32 +342,56 @@ G_MODULE_EXPORT void on_btn_register_clicked()
 // called when buttons is clicked
 void on_btn_create_clicked()
 {
-    gtk_widget_show(create_game);
-    gtk_main();    
+    //send create_game msg
+    send(client_socket, create_msg,strlen(create_msg), 0);
+
+    while(1)
+    {
+        valread = read(client_socket, buffer, 1024);
+
+        if(strncmp(buffer, wait_msg,11) == 0){
+            //TODO: Open wait window
+            gtk_widget_show(wait_game);
+            // gtk_main();
+            printf("%s\n", "waiting...");
+              
+        } else if(strncmp(buffer, start_msg,11) == 0){
+            //TODO: START GAME
+            build_game();
+            choose_answer();
+            gtk_widget_hide(window);
+            gtk_widget_hide(wait_game);
+            gtk_main();
+            printf("%s\n", "started...");
+            break;
+        }
+    }
+
+    
 } 
 
-void on_btn_creategame_clicked()
-    {
-        char *create_game_name = gtk_entry_get_text(g_creategame_name);
-        char statement[1024];
-        snprintf(statement, 1024,"INSERT INTO games (game_name) VALUES('%s')", create_game_name);
-        if (mysql_query(conn, statement))
-        {            
-            gtk_label_set_text(g_creategame_empty, "That game already exists!");
+// void on_btn_creategame_clicked()
+    // {
+    
+    //     char *wait_game_name = gtk_entry_get_text(g_creategame_name);
+    //     char statement[1024];
+    //     snprintf(statement, 1024,"INSERT INTO games (game_name) VALUES('%s')", wait_game_name);
+    //     if (mysql_query(conn, statement))
+    //     {            
+    //         gtk_label_set_text(g_creategame_empty, "That game already exists!");
                       
-        }           
-        else
-        {
-            gtk_label_set_text(g_creategame_empty, "Succesfull created" );
-        }
-        res = mysql_use_result(conn);
-        mysql_free_result(res);
-        snprintf(game_name, 1024, create_game_name); 
+    //     }           
+    //     else
+    //     {
+    //         gtk_label_set_text(g_creategame_empty, "Succesfull created" );
+    //     }
+    //     res = mysql_use_result(conn);
+    //     mysql_free_result(res);
+    //     snprintf(game_name, 1024, wait_game_name); 
 
-        //send create_game msg
-        send(client_socket, c_game,strlen(c_game), 0); 
+        
 
-    }
+    // }
 void help_about()
 {
     gtk_dialog_run(GTK_DIALOG(about));
@@ -445,7 +473,7 @@ void on_btn_join_clicked()
     //     mysql_free_result(res); 
     // }   
     
-    //join();
+    join();
     
     // build_game();
     // choose_answer();
@@ -969,7 +997,7 @@ void connectToSocket(){
     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Socket creation error \n");
-        return -1;
+        return ;
     }
     printf("DEFINING SOCKET FAMILY, ADDRESS & PORT .....\n");
     memset(&serv_addr, '0', sizeof(serv_addr));
@@ -981,40 +1009,43 @@ void connectToSocket(){
     if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0)
     {
         printf("\nInvalid address/ Address not supported \n");
-        return -1;
+        return;
     }
 
     printf("CLIENT CONNECTING ON PORT 8080 TO COMMUNICATE WITH SERVER..\n");
     if (connect(client_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         printf("\nConnection Failed \n");
-        return -1;
+        return;
     }
 }
 
 void join(){
 
-    send(client_socket, j_game, strlen(j_game), 0);
+    send(client_socket, join_msg, strlen(join_msg), 0);
 
     while(1)
     {
         
         valread = read( client_socket , buffer, 1024);
 
-        if(strncmp(buffer, wait_client,11) == 0){
+        if(strncmp(buffer, wait_msg,11) == 0){
             //TODO: Open wait window
-            gtk_widget_show(create_game); 
+            gtk_widget_show(wait_game); 
+            printf("%s\n", "waiting...");
               
-        } else if(strncmp(buffer, start_game,11) == 0){
+        } else if(strncmp(buffer, start_msg,11) == 0){
             //TODO: START GAME
             build_game();
             choose_answer();
             gtk_widget_hide(window);
+            gtk_widget_hide(wait_game);
             gtk_main();
+            printf("%s\n", "started...");
             break;
         } else if(strncmp(buffer, game_not_created,16) == 0){
             //TODO: Game is not created
-
+            printf("%s\n", "game is not created...");
             break;
         }
         
