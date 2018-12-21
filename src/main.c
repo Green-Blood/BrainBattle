@@ -344,33 +344,44 @@ G_MODULE_EXPORT void on_btn_register_clicked()
         mysql_free_result(res);
     }
 }
+void game_started()
+{
+    build_game();
+    choose_answer();
+    gtk_widget_hide(window);
+    gtk_widget_hide(wait_game);
+    gtk_main();
+}
+void game_waiting()
+{
+    gtk_widget_show(wait_game);
+    
+    
+}
 // called when buttons is clicked
 void on_btn_create_clicked()
 {
     //send create_game msg
     send(client_socket, create_msg,strlen(create_msg), 0);
-
-    while(1)
+    int creating = 1;
+    while(creating)
     {
         valread = read(client_socket, buffer, 1024);
 
         if(strncmp(buffer, wait_msg,11) == 0){
             //TODO: Open wait window
-            gtk_widget_show(wait_game);
-            // gtk_main();
+            game_waiting();            
             printf("%s\n", "waiting...");
+            gtk_main();
               
         } else if(strncmp(buffer, start_msg,11) == 0){
             //TODO: START GAME
-            build_game();
-            choose_answer();
-            gtk_widget_hide(window);
-            gtk_widget_hide(wait_game);
-            gtk_main();
+            game_started();
             printf("%s\n", "started...");
             break;
         }
     }
+    
 
     
 } 

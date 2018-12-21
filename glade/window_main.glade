@@ -251,61 +251,6 @@
       <column type="gint"/>
     </columns>
   </object>
-  <object class="GtkWindow" id="window_create_game">
-    <property name="can_focus">False</property>
-    <property name="default_width">400</property>
-    <property name="default_height">350</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <object class="GtkFixed">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="width_request">100</property>
-            <property name="height_request">80</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">WAIT</property>
-          </object>
-          <packing>
-            <property name="x">165</property>
-            <property name="y">145</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkImage">
-            <property name="name">400</property>
-            <property name="width_request">400</property>
-            <property name="height_request">350</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="pixbuf">../style/photo/WAITING.png</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lb_number_of_players ">
-            <property name="width_request">20</property>
-            <property name="height_request">10</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_bottom">2</property>
-            <property name="label" translatable="yes">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Futura Md BT 13"/>
-              <attribute name="foreground" value="#ffffffffffff"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="x">291</property>
-            <property name="y">261</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkWindow" id="window_endgame">
     <property name="can_focus">False</property>
     <property name="window_position">center</property>
@@ -1317,6 +1262,63 @@
           <packing>
             <property name="position">2</property>
             <property name="tab_fill">False</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="window_create_game">
+    <property name="can_focus">False</property>
+    <property name="default_width">400</property>
+    <property name="default_height">350</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="attached_to">window_main</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">WAIT</property>
+          </object>
+          <packing>
+            <property name="x">165</property>
+            <property name="y">145</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage">
+            <property name="name">400</property>
+            <property name="width_request">400</property>
+            <property name="height_request">350</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pixbuf">../style/photo/WAITING.png</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lb_number_of_players ">
+            <property name="width_request">20</property>
+            <property name="height_request">10</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_bottom">2</property>
+            <property name="label" translatable="yes">0</property>
+            <attributes>
+              <attribute name="font-desc" value="Futura Md BT 13"/>
+              <attribute name="foreground" value="#ffffffffffff"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">291</property>
+            <property name="y">261</property>
           </packing>
         </child>
       </object>
