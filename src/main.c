@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <gdk/gdkkeysyms.h>
 #include <stdio.h>
+#include <time.h>
 #include <mysql/mysql.h>
 
 #include <sys/socket.h>
@@ -90,6 +91,9 @@
     //Game values
     int static rounds = 0;
     int static score = 0;
+    int static question_number = 0;
+    
+    
     //Creating game values
     char static game_name[1024];
 
@@ -130,6 +134,7 @@
     
 int main(int argc, char *argv[])
 {
+   // srand(time(0));
     //Mysql initialization
     conn = mysql_init(NULL);
     //Mysql Connection
@@ -440,7 +445,7 @@ void on_btn_join_clicked()
     //     mysql_free_result(res); 
     // }   
     
-    join();
+    //join();
     
     // build_game();
     // choose_answer();
@@ -466,18 +471,19 @@ void choose_answer()
     //Create Mysql row
     MYSQL_ROW row;
     //create random number and counter      
-    int rand_num = rand() % mysql_num_rows(res);
+    // 
     int i = 0;
     score = 0;
     while(row = mysql_fetch_row(res))
     {
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
-        i++;       
-        if(i == rand_num)
+             
+        if(i == question_number)
         {
         
             gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);              
             
+
             int rand_but = rand() % 4;
             if(rand_but == 1)
             {
@@ -507,8 +513,12 @@ void choose_answer()
                 gtk_button_set_label(g_bt_answer4, row[rand_but]);
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
             }        
-        }     
+        }
+        i++; 
+             
     }
+    question_number++; 
+
     
     setScoreRounds();
     game_rounds();
@@ -603,7 +613,7 @@ void on_bt_answer1_clicked()
     //Create Mysql row
     MYSQL_ROW row;
     //create random number and counter      
-    int rand_num = rand() % mysql_num_rows(res);
+    
     int i=0;
 
     int ans_choose = 0;
@@ -614,15 +624,14 @@ void on_bt_answer1_clicked()
         
             if(strcmp(gtk_button_get_label(g_bt_answer1), row[2]) == 0) 
             {
-                score +=1;
+                score++;
             }
              
              
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
                
-        if(i == rand_num)
-        {
-                         
+        if(i == question_number)
+        {    
             
             int rand_but = rand() % 4;
             if(rand_but == 1)
@@ -654,8 +663,10 @@ void on_bt_answer1_clicked()
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
             }
             gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);         
-        }     
+        }
+        i++;     
     }
+    question_number++;
     
     setScoreRounds();
     //free the result
@@ -683,108 +694,26 @@ void on_bt_answer2_clicked()
     //Create Mysql row
     MYSQL_ROW row;
     //create random number and counter      
-    int rand_num = rand() % mysql_num_rows(res);
+     
     int i=0;
     int ans_choose = 0;
     
     while(row = mysql_fetch_row(res))
     {
            
-        {
+        
             if(strcmp(gtk_button_get_label(g_bt_answer2), row[2]) == 0) 
             {
-                score +=1;
+                score++;
             }
              
-        }
+        
         
         
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
-        i++;       
-        if(i == rand_num)
-        {             
-            
-            int rand_but = rand() % 4;
-            if(rand_but == 1)
-            {
-                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
-                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
-                gtk_button_set_label(g_bt_answer4, row[rand_but+3]);
-                gtk_button_set_label(g_bt_answer2, row[rand_but+4]);
-            }
-            else if(rand_but == 4)
-            {
-                gtk_button_set_label(g_bt_answer3, row[rand_but]);
-                gtk_button_set_label(g_bt_answer1, row[rand_but-2]);
-                gtk_button_set_label(g_bt_answer4, row[rand_but-1]);
-                gtk_button_set_label(g_bt_answer2, row[rand_but+1]);
-            }
-            else if (rand_but == 3)
-            {
-                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
-                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
-                gtk_button_set_label(g_bt_answer4, row[rand_but]);
-                gtk_button_set_label(g_bt_answer2, row[rand_but-1]);
-            }
-            else if (rand_but == 2)
-            {
-                gtk_button_set_label(g_bt_answer3, row[rand_but+1 ]);
-                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
-                gtk_button_set_label(g_bt_answer4, row[rand_but]);
-                gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
-            } 
-            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);        
-        }     
-    }
-    setScoreRounds();
-    //free the result
-    mysql_free_result(res);  
-    gtk_widget_hide(window); 
-    game_rounds();   
-   
-}
-
-//Executes when button 3 clicked
-void on_bt_answer3_clicked()
-{
-    //Write sql code into an variable and send the query to find the password   
-    if (mysql_query(conn, "SELECT * FROM `questions`  " ))
-    {
-            fprintf(stderr, "%s\n", mysql_error(conn));                       
-    }   
-    //Store result and add it to the row   
-    res = mysql_store_result(conn);  
-    
-    //Check if the result is correct or not
-    if (res == NULL )
-    {                    
-            gtk_widget_show(invalid_entry);
-                 
-    }
-    //Create Mysql row
-    MYSQL_ROW row;
-    //create random number and counter      
-    int rand_num = rand() % mysql_num_rows(res);
-    int i=0;
-    int ans_choose = 0;
-    
-    while(row = mysql_fetch_row(res))
-    {
-           
-        {
-            if(strcmp(gtk_button_get_label(g_bt_answer3), row[2]) == 0) 
-            {
-                score +=1;
-            }
-             
-        }
-        
-        
-        //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
-        i++;       
-        if(i == rand_num)
-        {
-        
+               
+        if(i == question_number)
+        {        
             int rand_but = rand() % 4;
             if(rand_but == 1)
             {
@@ -815,8 +744,93 @@ void on_bt_answer3_clicked()
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
             }
             gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);         
-        }     
+        }
+        i++;     
     }
+    question_number++;
+    
+    setScoreRounds();
+    //free the result
+    mysql_free_result(res);  
+    gtk_widget_hide(window);
+    game_rounds();
+   
+}
+
+//Executes when button 3 clicked
+void on_bt_answer3_clicked()
+{
+    //Write sql code into an variable and send the query to find the password   
+    if (mysql_query(conn, "SELECT * FROM `questions`  " ))
+    {
+            fprintf(stderr, "%s\n", mysql_error(conn));                       
+    }   
+    //Store result and add it to the row   
+    res = mysql_store_result(conn);  
+    
+    //Check if the result is correct or not
+    if (res == NULL )
+    {                    
+            gtk_widget_show(invalid_entry);
+                 
+    }
+    //Create Mysql row
+    MYSQL_ROW row;
+    //create random number and counter      
+     
+    int i=0;
+    int ans_choose = 0;
+    
+    while(row = mysql_fetch_row(res))
+    {
+           
+        
+            if(strcmp(gtk_button_get_label(g_bt_answer3), row[2]) == 0) 
+            {
+                score++;
+            }
+             
+        
+        
+        
+        //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
+               
+        if(i == question_number)
+        {        
+            int rand_but = rand() % 4;
+            if(rand_but == 1)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but+3]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+4]);
+            }
+            else if(rand_but == 4)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but-2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but-1]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+1]);
+            }
+            else if (rand_but == 3)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but-1]);
+            }
+            else if (rand_but == 2)
+            {
+                gtk_button_set_label(g_bt_answer3, row[rand_but+1 ]);
+                gtk_button_set_label(g_bt_answer1, row[rand_but+2]);
+                gtk_button_set_label(g_bt_answer4, row[rand_but]);
+                gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
+            }
+            gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);         
+        }
+        i++;     
+    }
+    question_number++;
     
     setScoreRounds();
     //free the result
@@ -845,23 +859,23 @@ void on_bt_answer4_clicked()
     //Create Mysql row
     MYSQL_ROW row;
     //create random number and counter      
-    int rand_num = rand() % mysql_num_rows(res);
+     
     int i = 0;
     int ans_choose = 0;
     
     while(row = mysql_fetch_row(res))
     {
            
-        {
+        
             if(strcmp(gtk_button_get_label(g_bt_answer4), row[2]) == 0) 
             {
-                score +=1;
+                score++;
             }
              
-        }
+        
         //counter is going up everytime when loop is going, so if random number is equals to counter it will show this question
-        i++;       
-        if(i == rand_num)
+               
+        if(i == question_number)
         {
         
             int rand_but = rand() % 4;
@@ -894,8 +908,10 @@ void on_bt_answer4_clicked()
                 gtk_button_set_label(g_bt_answer2, row[rand_but+3]);
             } 
             gtk_label_set_text(GTK_LABEL(g_lb_question), row[1]);        
-        }     
+        }
+        i++;     
     }
+    question_number++;
     setScoreRounds();
     //free the result
     game_rounds();
