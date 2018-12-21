@@ -26,7 +26,7 @@
     GtkWidget   *login;         //Login Window
     GtkWidget   *end_game;      //EndGame Widget    
     GtkWidget   *join_game;     //Joining the game 
-    GtkWidget   *not_created    //Not created window 
+    GtkWidget   *not_created;    //Not created window 
     //Game
         //Actual Game Window
         GtkWidget   *game;          
@@ -304,7 +304,7 @@ void Login()
             gtk_widget_hide(login);
             gtk_main();                    
         }
-        
+
 //Registration of new player
 G_MODULE_EXPORT void on_btn_register_clicked()
 {
