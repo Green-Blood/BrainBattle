@@ -26,7 +26,15 @@
     GtkWidget   *login;         //Login Window
     GtkWidget   *end_game;      //EndGame Widget    
     GtkWidget   *join_game;     //Joining the game 
+    
+
+    //Create game
+    GtkWidget   *wait_game;
+    GtkEntry    *g_creategame_name;
+    GtkWidget   *g_creategame_empty;
+    GtkLabel    *lb_number_of_players; // Number of connected people
     GtkWidget   *not_created;    //Not created window 
+    
     //Game
         //Actual Game Window
         GtkWidget   *game;          
@@ -40,10 +48,7 @@
         GtkWidget *g_lb_game_score;   //Score in the game
         GtkWidget *g_lb_game_rounds;   //Rounds in the game
 
-    //Create game
-    GtkWidget   *wait_game;
-    GtkEntry    *g_creategame_name;
-    GtkWidget   *g_creategame_empty;
+    
     
     //LeaderBoard
     GtkWidget *lb_leader_name1;
@@ -167,6 +172,8 @@ int main(int argc, char *argv[])
     //Building not created game
     not_created = GTK_WIDGET(gtk_builder_get_object(builder, "window_notcreated"));
     gtk_builder_connect_signals(builder, NULL);
+    //Waiting people
+    lb_number_of_players = GTK_LABEL(gtk_builder_get_object(builder, "lb_number_of_players "));
 
 
     about = GTK_WIDGET(gtk_builder_get_object(builder, "about"));
@@ -355,6 +362,7 @@ void game_started()
 void game_waiting()
 {
     gtk_widget_show(wait_game);
+    gtk_label_set_text(lb_number_of_players , "№");
     
     
 }
