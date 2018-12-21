@@ -27,18 +27,20 @@ const static char *unix_socket = NULL;
 const unsigned int flag = 0;
 
 //a messages
-	char *wait_msg = "wait_client\n";
-	char *start_msg = "start_game\n";
-	char *end_msg = "end_game\n";
-	char *close_client = "close_client";
-	char *answer = "answer";
-	char *join = "join_game";
-	char *create_game = "create_game";
-	char *finish_game = "finish_game";
-	char *send_score = "score_game";
+	const char *wait_msg = "wait_client";
+	const char *start_msg = "start_game";
+	const char *end_msg = "end_game";
+	const char *close_client = "close_client";
+	const char *answer = "answer";
+	const char *join = "join_game";
+	const char *create_game = "create_game";
+	const char *finish_game = "finish_game";
+	const char *send_score = "game_score";
+	const char *game_not_created = "game_not_created";
 
-	int GAME_IS_STARTED = 0;
-	int GAME_IS_FINISHED = 1;
+	int GAME_STARTED = 0;
+	int GAME_CREATED = 0;
+	int GAME_FINISHED = 1;
 
 	int SCORE;
 	
@@ -49,7 +51,7 @@ int main(int argc , char *argv[])
 	int number_of_clients = 0; 
 	int max_sd; 
 	int num_of_players = 0;
-	int num_of_max_players = 5;
+	int num_of_max_players = 2;
 
 	struct sockaddr_in address; 
 		
@@ -181,8 +183,8 @@ int main(int argc , char *argv[])
 				//incoming message 
 				valread = read( sd , buffer, 1024);
 
-				if(GAME_IS_FINISHED == 0 && GAME_IS_STARTED == 1){
-					SCORE = buffer[sizeof(send_score)];
+				if(GAME_FINISHED == 0 && GAME_STARTED == 1){
+					SCORE = buffer[strlen(send_score)];
 				}
 				
 				if (valread == 0) 
@@ -214,31 +216,40 @@ int main(int argc , char *argv[])
 					// //of the data read 
 					send(sd , wait_msg , strlen(wait_msg) , 0 ); 
 					num_of_players++;
-					GAME_IS_STARTED = 1;
-					GAME_IS_FINISHED = 0;
+					GAME_CREATED = 1;
+					GAME_FINISHED = 0;
 
 				} else if(strncmp(buffer, join, 9) == 0){
 
-					num_of_players++;
+					if(GAME_CREATED == 1){
+						
+						num_of_players++;
 
-					if(num_of_players == num_of_max_players){
-					//send start_game if max number of clients is reached
-					for(index = 0; index < num_of_max_players; index++){
-						if(send(client_socket[index], start_msg, strlen(start_msg), 0) != strlen(start_msg))
-							perror("send");
+						if(num_of_players == num_of_max_players){
+						//send start_game if max number of clients is reached
+						for(index = 0; index < num_of_max_players; index++){
+							GAME_STARTED = 1;
+							if(send(client_socket[index], start_msg, strlen(start_msg), 0) != strlen(start_msg))
+								perror("send");
+							}
 						}
-					}
-					else{
-						//send wait_msg if max number of clients is not reached
-						if( send(new_socket, wait_msg, strlen(wait_msg), 0) != strlen(wait_msg) ) 
-						{ 
-							perror("send"); 
+						else{
+							//send wait_msg if max number of clients is not reached
+							if( send(new_socket, wait_msg, strlen(wait_msg), 0) != strlen(wait_msg) ) 
+							{ 
+								perror("send"); 
+							}
 						}
+					} else {
+
+						send(new_socket, game_not_created, strlen(game_not_created), 0);
+						
 					}
 
 				} else if(strncmp(buffer, finish_game, 11)){
-					GAME_IS_FINISHED = 1;
-					GAME_IS_STARTED = 0;
+					GAME_FINISHED = 1;
+					GAME_STARTED = 0;
+					GAME_CREATED = 0;
 				}
 			} 
 		} 
@@ -246,3 +257,15 @@ int main(int argc , char *argv[])
 		
 	return 0; 
 } 
+
+void splitStringToArray(char buf[], char* array[]){
+    int i = 0;
+    char *p = strtok (buf, "/");
+
+    while (p != NULL)
+    {
+        array[i++] = p;
+        p = strtok (NULL, "/");
+    }
+    
+}
