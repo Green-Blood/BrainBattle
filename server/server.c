@@ -42,6 +42,10 @@ const unsigned int flag = 0;
 	static int GAME_CREATED = 0;
 	static int GAME_FINISHED = 1;
 
+	static char update_query[2048] = "";
+	char* array[2];
+
+	void splitStringToArray(char buf[], char* array[]);
 	int SCORE;
 	
 int main(int argc , char *argv[]) 
@@ -50,8 +54,9 @@ int main(int argc , char *argv[])
 	int master_socket , addrlen , new_socket , client_socket[30] , max_clients = 30 , activity, index , valread , sd;
 	int number_of_clients = 0; 
 	int max_sd; 
-	int num_of_players = 0;
+	int num_of_joined_players = 0;
 	int num_of_max_players = 2;
+	int num_of_finished_players = 0;
 
 	struct sockaddr_in address; 
 		
@@ -197,7 +202,7 @@ int main(int argc , char *argv[])
 					//Close the socket and mark as 0 in list for reuse 
 					close( sd ); 
 					client_socket[index] = 0; 
-					num_of_players--;
+					num_of_joined_players--;
 				} 
 				//Echo back the message that came in
 				else if (strncmp(buffer, close_client, 12) == 0)
@@ -210,13 +215,13 @@ int main(int argc , char *argv[])
 					//Close the socket and mark as 0 in list for reuse 
 					close( sd ); 
 					client_socket[index] = 0;
-					num_of_players--;
+					num_of_joined_players--;
 				}
 				else if(strncmp(buffer, create_game,11) == 0)
 				{ 
 					
 					send(sd , wait_msg , strlen(wait_msg) , 0 ); 
-					num_of_players++;
+					num_of_joined_players++;
 					GAME_CREATED = 1;
 					GAME_FINISHED = 0;
 
@@ -226,12 +231,13 @@ int main(int argc , char *argv[])
 
 					if(GAME_CREATED == 1){
 						
-						num_of_players++;
+						num_of_joined_players++;
 
-						if(num_of_players == num_of_max_players){
+						if(num_of_joined_players == num_of_max_players){
 						//send start_game if max number of clients is reached
-						for(index = 0; index < num_of_max_players; index++){
+						for(index = 0; index < number_of_clients; index++){
 							GAME_STARTED = 1;
+							printf("%s\n", "START GAME");
 							if(send(client_socket[index], start_msg, strlen(start_msg), 0) != strlen(start_msg))
 								perror("send");
 							}
@@ -252,10 +258,25 @@ int main(int argc , char *argv[])
 						
 					}
 
-				} else if(strncmp(buffer, finish_game, 11)){
+				} else if(strncmp(buffer, finish_game, 11) == 0){
 					GAME_FINISHED = 1;
 					GAME_STARTED = 0;
 					GAME_CREATED = 0;
+					num_of_finished_players++;
+
+					if(num_of_finished_players == num_of_joined_players){
+						printf("%s\n", "ALL USER FINISHED");
+						for(index = 0; index < number_of_clients; index++){
+							send(client_socket[index], update_query, 2048, 0);
+						}
+					} 
+					else
+					{
+						splitStringToArray(buffer, array);
+						
+						strcat(update_query, array[1]);
+						printf("%s\n", "FINISH");
+					}
 				}
 			} 
 		} 

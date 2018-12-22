@@ -10,7 +10,7 @@ OPT=-O0
 # warnings
 WARN=-Wall
  
-PTHREAD=-pthread
+PTHREAD=-pthread -lpthread
  
 CCFLAGS=$(DEBUG) $(OPT) $(WARN) $(PTHREAD) -pipe
  

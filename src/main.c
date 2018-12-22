@@ -13,6 +13,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <pthread.h> 
 
 
 // #define IP "192.168.43.11"
@@ -138,6 +139,12 @@
     void join();
     void splitStringToArray(char buf[], char* array[]);
     void connectToSocket();
+    void *wait_for_msg(void* args);
+
+    pthread_t thread_id;
+    pthread_t update_thread_id;
+    pthread_t join_thread_id;
+
     
     #define PORT 8888
     
@@ -152,6 +159,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error: %s [%d]\n", mysql_error(conn), mysql_errno(conn));
         exit(1);
     }
+
 
     connectToSocket();
 
@@ -362,37 +370,39 @@ void game_started()
 void game_waiting()
 {
     gtk_widget_show(wait_game);
-    gtk_label_set_text(lb_number_of_players , "№");
-    
-    
+    gtk_label_set_text(lb_number_of_players , "1");
+
 }
 // called when buttons is clicked
 void on_btn_create_clicked()
 {
     //send create_game msg
     send(client_socket, create_msg,strlen(create_msg), 0);
-    int creating = 1;
-    while(creating)
+    pthread_create(&thread_id, NULL, &wait_for_msg, NULL); 
+    
+    game_waiting();
+} 
+
+void *wait_for_msg(void* args){
+    
+    while(1)
     {
         valread = read(client_socket, buffer, 1024);
+        
+        printf("%s\n", "wait");
 
         if(strncmp(buffer, wait_msg,11) == 0){
             //TODO: Open wait window
-            game_waiting();            
             printf("%s\n", "waiting...");
-            gtk_main();
               
-        } else if(strncmp(buffer, start_msg,11) == 0){
+        } else if(strncmp(buffer, start_msg,10) == 0){
             //TODO: START GAME
-            game_started();
             printf("%s\n", "started...");
+            game_started();
             break;
         }
     }
-    
-
-    
-} 
+}
 
 // void on_btn_creategame_clicked()
     // {
@@ -580,15 +590,50 @@ void choose_answer()
 }
 void update_score()
 {
-    char updatescore[1024];
-    snprintf(updatescore, 1024,"UPDATE `users` SET `score` = score + %d WHERE users.name = '%s'", score, globalname);
+    char send_upd[200];
+    char updatescore[150];
+    snprintf(updatescore, 150,"UPDATE `users` SET `score` = score + %d WHERE users.name = '%s';", score, globalname);
+    
+    strcpy(send_upd, finish_msg);
+    strcat(send_upd, "/");
+    strcat(send_upd, updatescore);
+
+    
+
         if (mysql_query(conn, updatescore))
         {            
             mysql_errno(conn);         
         }           
         res = mysql_use_result(conn);
         mysql_free_result(res);
+        send(client_socket, send_upd, 200, 0);
+        pthread_create(&update_thread_id, NULL, &wait_for_msg, NULL);
 }
+
+void *update_scores(void* args){
+
+    char buf[2048];    
+    while(1)
+    {
+        valread = read(client_socket, buf, 2048);
+        
+        printf("%s\n", "wait");
+
+        if(strncmp(buf, "UPDATE",6) == 0){
+            //TODO: START GAME
+            printf("%s\n", "score updated");
+
+            if (mysql_query(conn, buf))
+            {            
+                mysql_errno(conn);         
+            }           
+            res = mysql_use_result(conn);
+            mysql_free_result(res);
+            return;
+        }
+    }
+}
+
 void build_game()
 {
     //Build the game window
@@ -1055,10 +1100,11 @@ void join(){
 
         if(strncmp(buffer, wait_msg,11) == 0){
             //TODO: Open wait window
-            gtk_widget_show(wait_game); 
+            pthread_create(&join_thread_id, NULL, &wait_for_msg, NULL);
+            game_waiting();
             printf("%s\n", "waiting...");
               
-        } else if(strncmp(buffer, start_msg,11) == 0){
+        } else if(strncmp(buffer, start_msg,10) == 0){
             //TODO: START GAME
             build_game();
             choose_answer();
@@ -1070,6 +1116,7 @@ void join(){
         } else if(strncmp(buffer, game_not_created,16) == 0){
             //TODO: Game is not created
             printf("%s\n", "game is not created...");
+            gtk_widget_show(not_created);
             break;
         }
         
