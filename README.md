@@ -7,3 +7,4 @@
 ###  Used SQL for database.
 * Main purpose of the game is to find the correct answer from the given 4 variants. 
 * Has High score system, to compete between players, settings 
+* Players can create, and join friends games. 
