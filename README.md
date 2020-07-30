@@ -1,4 +1,5 @@
 # BrainBattle/Clash of minds
+## Operating Systems course Term project
 ![GitHub Logo](/style/photo/MENU.png)
 > Highest mark in the course.
 
